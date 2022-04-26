@@ -41,8 +41,14 @@ namespace WebServer
                         data = Encoding.ASCII.GetString(bytes, 0, i);
 
                         Console.WriteLine($"Received: {data}");
+                        HttpRequest request = new HttpRequest();
+                        HttpResponse response = new HttpResponse();
                         
-                        data = "HTTP/1.1 200\nContent-Length:28\nContent-Type:text/html\nConnection:Closed\n\n<h1>Welcom to my server</h1>";
+                        response.AddHeader("Connection", "Closed");
+                        response.AddHeader("Set-Cookie", "id=a3fWa; Expires=Wed, 21 Oct 2026 07:28:00 GMT;");
+                        response.Content = "<h1>Welcom to my server</h1>";
+
+                        data = response.ToString();
 
                         byte[] messsage = Encoding.ASCII.GetBytes(data);
                         stream.Write(messsage);
