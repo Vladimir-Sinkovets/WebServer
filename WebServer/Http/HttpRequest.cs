@@ -6,7 +6,7 @@ namespace WebServer
     {
         public string Method { get; }
         public string Url { get; }
-        private IDictionary<string, string> _headers = new Dictionary<string, string>;
+        private IDictionary<string, string> _headers = new Dictionary<string, string>();
 
         public HttpRequest(string httpData)
         {
