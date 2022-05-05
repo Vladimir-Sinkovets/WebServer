@@ -11,24 +11,26 @@ namespace WebServer
 {
     public class WebServer : IServer
     {
-        private TcpListener server;
+        private TcpListener _server;
+        private IClientHandler _clientHandler;
         
         public WebServer(IPAddress ip, int port)
         {
-            server = new TcpListener(ip, port);
+            _server = new TcpListener(ip, port);
+            _clientHandler = new ClientHandler();
         }
 
         public void Run()
         {
             try
             {
-                server.Start();
+                _server.Start();
 
                 while (true)
                 {
                     Console.WriteLine("Waiting for connection...");
 
-                    TcpClient client = server.AcceptTcpClient();
+                    TcpClient client = _server.AcceptTcpClient();
 
                     Console.WriteLine("Connected!");
 
@@ -41,43 +43,19 @@ namespace WebServer
             }
             finally
             {
-                server.Stop();
+                _server.Stop();
             }
         }
 
-        private static void HandleClient(object state)
+        private void HandleClient(object state)
         {
             TcpClient client = (TcpClient)state;
-
-            NetworkStream stream = client.GetStream();
-
-            while (client.Connected)
-            {
-                byte[] bytes = new byte[4096];
-                int i = stream.Read(bytes, 0, bytes.Length);
-                string data = Encoding.ASCII.GetString(bytes, 0, i);
-
-                //Console.WriteLine($"Received: {data}");
-                HttpRequest request = new HttpRequest(data);
-                HttpResponse response = new HttpResponse();
-
-                response.AddHeader("Connection", "Closed");
-                response.AddHeader("Set-Cookie", "id=a3fWa; Expires=Wed, 21 Oct 2026 07:28:00 GMT;");
-                response.Content = "<h1>Welcom to my server</h1>";
-
-                data = response.ToString();
-
-                byte[] messsage = Encoding.ASCII.GetBytes(data);
-                stream.Write(messsage);
-
-                //Console.WriteLine($"Sent: {data}");
-            }
-            client.Close();
+            _clientHandler.Handle(client);
         }
 
         public void Stop()
         {
-            server.Stop();
+            _server.Stop();
         }
     }
 }
