@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebServer
 {
-    internal class HttpResponse
+    public class HttpResponse
     {
         private IDictionary<string, string> _headers = new Dictionary<string, string>();
         public string HttpVersion { get; set; } = "1.1";

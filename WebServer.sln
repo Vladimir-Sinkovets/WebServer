@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebServer", "WebServer\WebServer.csproj", "{E30D44C7-AFE2-46B2-9322-3524DA5CA351}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebServer", "WebServer\WebServer.csproj", "{E30D44C7-AFE2-46B2-9322-3524DA5CA351}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebServer.Tests", "WebServer.Tests\WebServer.Tests.csproj", "{761BEFF4-9074-40CD-9162-D79E8BADC389}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{E30D44C7-AFE2-46B2-9322-3524DA5CA351}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E30D44C7-AFE2-46B2-9322-3524DA5CA351}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E30D44C7-AFE2-46B2-9322-3524DA5CA351}.Release|Any CPU.Build.0 = Release|Any CPU
+		{761BEFF4-9074-40CD-9162-D79E8BADC389}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{761BEFF4-9074-40CD-9162-D79E8BADC389}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{761BEFF4-9074-40CD-9162-D79E8BADC389}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{761BEFF4-9074-40CD-9162-D79E8BADC389}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

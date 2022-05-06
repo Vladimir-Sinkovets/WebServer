@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace WebServer
 {
-    internal class HttpRequest
+    public class HttpRequest
     {
         public string Method { get; }
         public string Url { get; }
