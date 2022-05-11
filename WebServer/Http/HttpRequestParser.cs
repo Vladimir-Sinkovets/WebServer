@@ -2,21 +2,74 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+
 
 namespace WebServer.Http
 {
     internal static class HttpRequestParser
     {
-        public static string GetMethod(string httpData)
+        public static HttpMethod GetMethod(string httpData)
         {
+            Regex methodRegex = new Regex(@"^\w+", RegexOptions.IgnoreCase);
+            string methodName = methodRegex.Match(httpData).Value
+                .ToLower();
 
-            return "";
+            switch (methodName)
+            {
+                case "get":
+                    return HttpMethod.GET;
+                case "put":
+                    return HttpMethod.PUT;
+                case "post":
+                    return HttpMethod.POST;
+                case "head":
+                    return HttpMethod.HEAD;
+                case "delete":
+                    return HttpMethod.DELETE;
+                case "connect":
+                    return HttpMethod.CONNECT;
+                case "options":
+                    return HttpMethod.OPTIONS;
+                case "trace":
+                    return HttpMethod.TRACE;
+                default:
+                    throw new ArgumentException("Wrong http method name");
+            }
         }
-        public static string GetCookies(string httpData)
+
+        public static string GetUrl(string httpData)
         {
+            Regex urlRegex = new Regex(@"(?<=^\w+\s).+(?= )", RegexOptions.IgnoreCase);
+            string url = urlRegex.Match(httpData).Value
+                .ToLower();
 
-            return "";
+            return url;
         }
+
+        public static IDictionary<string, string> GetHeaders(string httpData)
+        {
+            Regex headerRegex = new Regex(@".+:.+");
+
+            MatchCollection headerMatches = headerRegex.Matches(httpData);
+
+            IDictionary<string, string> headers = new Dictionary<string, string>();
+
+            foreach (Match match in headerMatches)
+            {
+                Regex headerNameRegex = new Regex(@"^.+(?=:)");
+                string headerName = headerNameRegex.Match(match.Value).Value;
+
+                Regex headerValueRegex = new Regex(@"(?<=: *)[^\s].+");
+                string headerValue = headerValueRegex.Match(match.Value).Value;
+
+                headers.Add(headerName, headerValue);
+            }
+
+            return headers;
+        }
+
+
     }
 }

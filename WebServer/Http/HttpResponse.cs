@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebServer.Http.Cookie;
 
 namespace WebServer
 {
@@ -13,6 +14,7 @@ namespace WebServer
         public string Content { get; set; }
         public string ContentType { get; set; } = "text/html";
         public string StatusCode { get; set; } = "200";
+        public IResponseCookie Cookie { get; } = new ResponseCookie();
 
         public void AddHeader(string header, string value)
         {

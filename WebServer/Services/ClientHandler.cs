@@ -18,7 +18,7 @@ namespace WebServer
                 byte[] bytes = new byte[4096];
                 int i = stream.Read(bytes, 0, bytes.Length);
                 string data = Encoding.ASCII.GetString(bytes, 0, i);
-                Console.WriteLine(data);
+
                 HttpRequest request = new HttpRequest(data);
                 HttpResponse response = new HttpResponse();
 
