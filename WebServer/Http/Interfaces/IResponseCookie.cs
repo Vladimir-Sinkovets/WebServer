@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebServer.Http.Cookie
+namespace WebServer.Http.Interfaces
 {
     public interface IResponseCookie
     {

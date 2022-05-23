@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebServer.Http.Interfaces;
 
-namespace WebServer.Http.Cookie
+namespace WebServer.Http
 {
     public class RequestCookieCollection : IRequestCookieCollection
     {
         private IDictionary<string, string> _pairs = new Dictionary<string, string>();
+        public RequestCookieCollection()
+        {
 
+        }
         public RequestCookieCollection(string cookieData)
         {
             cookieData = cookieData.Replace(" ", "");
@@ -32,7 +36,7 @@ namespace WebServer.Http.Cookie
         public bool TryGetValue(string key, out string value)
         {
             bool result = _pairs.TryGetValue(key, out string pairValue);
-            
+
             value = pairValue;
 
             return result;

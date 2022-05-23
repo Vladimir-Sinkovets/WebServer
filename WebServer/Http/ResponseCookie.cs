@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebServer.Http.Interfaces;
 
-namespace WebServer.Http.Cookie
+namespace WebServer.Http
 {
     public class ResponseCookie : IResponseCookie
     {
@@ -21,9 +22,16 @@ namespace WebServer.Http.Cookie
         }
         public override string ToString()
         {
-            return _pairs
-                .Select(p => $"{p.Key}={p.Value}")
-                .Aggregate((x, y) => x + y);
+            if (_pairs.Count == 0)
+            {
+                return string.Empty;
+            }
+            else
+            {
+                return _pairs
+                    .Select(p => $"{p.Key}={p.Value}")
+                    .Aggregate((x, y) => x + y);
+            }
         }
     }
 }

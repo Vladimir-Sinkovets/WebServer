@@ -1,26 +1,32 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using WebServer.Http;
 using WebServer.Http.Cookie;
+using WebServer.Http.Interfaces;
 
-namespace WebServer
+namespace WebServer.Http
 {
-    public class HttpRequest
+    public class HttpRequest : IHttpRequest
     {
         public HttpMethod Method { get; }
         public string Url { get; }
         public IRequestCookieCollection Cookie { get; }
-        //public string Cookie { get => _headers["Cookie"]; }
 
         private IDictionary<string, string> _headers = new Dictionary<string, string>();
 
         public HttpRequest(string httpData)
         {
-            Method = HttpRequestParser.GetMethod(httpData);
-            Url = HttpRequestParser.GetUrl(httpData);
-            _headers = HttpRequestParser.GetHeaders(httpData);
+            Method = HttpRequestParseHelper.GetMethod(httpData);
+            Url = HttpRequestParseHelper.GetUrl(httpData);
+            _headers = HttpRequestParseHelper.GetHeaders(httpData);
 
-            Cookie = new RequestCookieCollection(httpData);
+            if (_headers.ContainsKey("Cookie"))
+            {
+                Cookie = new RequestCookieCollection(_headers["Cookie"]);
+            }
+            else
+            {
+                Cookie = new RequestCookieCollection();
+            }
         }
         public string GetHeaderValue(string headerName)
         {

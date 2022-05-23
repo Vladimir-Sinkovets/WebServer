@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebServer.Http
+namespace WebServer.Services
 {
-    public interface IHttpRequest
+    public interface ICookieIdentifier
     {
-
     }
 }

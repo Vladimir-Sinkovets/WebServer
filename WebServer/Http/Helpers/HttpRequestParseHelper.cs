@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace WebServer.Http
 {
-    internal static class HttpRequestParser
+    internal static class HttpRequestParseHelper
     {
         public static HttpMethod GetMethod(string httpData)
         {

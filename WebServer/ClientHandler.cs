@@ -4,6 +4,8 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using WebServer.Http;
+using WebServer.Http.Interfaces;
 
 namespace WebServer
 {
@@ -18,21 +20,25 @@ namespace WebServer
                 byte[] bytes = new byte[4096];
                 int i = stream.Read(bytes, 0, bytes.Length);
                 string data = Encoding.ASCII.GetString(bytes, 0, i);
-
-                HttpRequest request = new HttpRequest(data);
-                HttpResponse response = new HttpResponse();
-
-                response.AddHeader("Connection", "Closed");
-                response.AddHeader("Set-Cookie", "id=a3fWa; Expires=Wed, 21 Oct 2026 07:28:00 GMT;");
-                response.Content = "<h1>Welcom to my server</h1>";
-
-                data = response.ToString();
+                data = CreateResponse(data);
 
                 byte[] messsage = Encoding.ASCII.GetBytes(data);
                 stream.Write(messsage);
             }
 
             client.Close();
+        }
+
+        private static string CreateResponse(string data)
+        {
+            IHttpRequest request = new HttpRequest(data);
+            IHttpResponse response = new HttpResponse();
+
+            response.Cookie.Add("id", "123");
+
+            response.Content = "<h1>Welcom to my server</h1>";
+
+            return response.ToString();
         }
     }
 }
