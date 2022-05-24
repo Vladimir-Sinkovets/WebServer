@@ -6,11 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using WebServer.Http;
 using WebServer.Http.Interfaces;
+using WebServer.Services;
 
 namespace WebServer
 {
     class ClientHandler : IClientHandler
     {
+        private ICookieIdentifier _identifier = new CookieIdentifier();
         public void Handle(TcpClient client)
         {
             NetworkStream stream = client.GetStream();
@@ -20,7 +22,9 @@ namespace WebServer
                 byte[] bytes = new byte[4096];
                 int i = stream.Read(bytes, 0, bytes.Length);
                 string data = Encoding.ASCII.GetString(bytes, 0, i);
-                data = CreateResponse(data);
+
+                IHttpContext context = new HttpContext(data);
+                data = CreateResponse(context);
 
                 byte[] messsage = Encoding.ASCII.GetBytes(data);
                 stream.Write(messsage);
@@ -29,16 +33,16 @@ namespace WebServer
             client.Close();
         }
 
-        private static string CreateResponse(string data)
+        private string CreateResponse(IHttpContext context)
         {
-            IHttpRequest request = new HttpRequest(data);
-            IHttpResponse response = new HttpResponse();
+            //context.Response.Cookie.Add("id", "123");
 
-            response.Cookie.Add("id", "123");
+            _identifier.SetId(context);
 
-            response.Content = "<h1>Welcom to my server</h1>";
 
-            return response.ToString();
+            context.Response.Content = $"<h1>Welcom to my server. You are client with id = {_identifier.GetCurrentClientId(context)}</h1>";
+
+            return context.Response.ToString();
         }
     }
 }

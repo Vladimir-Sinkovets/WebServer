@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using WebServer.Http.Cookie;
 using WebServer.Http.Interfaces;
 
 namespace WebServer.Http
