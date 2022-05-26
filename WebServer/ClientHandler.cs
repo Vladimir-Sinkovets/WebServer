@@ -13,6 +13,7 @@ namespace WebServer
     class ClientHandler : IClientHandler
     {
         private ICookieIdentifier _identifier = new CookieIdentifier();
+
         public void Handle(TcpClient client)
         {
             NetworkStream stream = client.GetStream();
@@ -35,12 +36,22 @@ namespace WebServer
 
         private string CreateResponse(IHttpContext context)
         {
-            //context.Response.Cookie.Add("id", "123");
-
             _identifier.SetId(context);
 
+            bool result = _identifier.TryGetCurrentClientId(context, out string id);
 
-            context.Response.Content = $"<h1>Welcom to my server. You are client with id = {_identifier.GetCurrentClientId(context)}</h1>";
+            string message;
+
+            if (result == true)
+            {
+                message = $"Your id = {id}";
+            }
+            else
+            {
+                message = $"Hi, new client";
+            }
+
+            context.Response.Content = $"<h1>Welcom to my server. {message}</h1>";
 
             return context.Response.ToString();
         }

@@ -14,14 +14,20 @@ namespace WebServer.Services
         {
             if (context.Request.Cookie.TryGetValue("id", out var id) == false)
             {
-                context.Response.Cookie.Add("id", $"{_lastId}");
+                lock (this)
+                {
+                    context.Response.Cookie.Add("id", $"{_lastId}");
+
+                    _lastId++;
+                }
             }
         }
-        public bool GetCurrentClientId(IHttpContext context, out string id)
-        {
-            bool result = context.Request.Cookie.TryGetValue("id", out string identifier);
 
-            id = identifier;
+        public bool TryGetCurrentClientId(IHttpContext context, out string id)
+        {
+            bool result = context.Request.Cookie.TryGetValue("id", out string cookieId);
+
+            id = cookieId;
 
             return result;
         }

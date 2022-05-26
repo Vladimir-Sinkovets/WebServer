@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using WebServer.Enums;
+using WebServer.Http.Helpers;
 using WebServer.Http.Interfaces;
 
 namespace WebServer.Http

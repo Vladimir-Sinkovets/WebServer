@@ -35,6 +35,7 @@ namespace WebServer
                     Console.WriteLine("Connected!");
 
                     ThreadPool.QueueUserWorkItem(HandleClient, client);
+                    //HandleClient(client);
                 }
             }
             catch (Exception ex)
@@ -50,6 +51,7 @@ namespace WebServer
         private void HandleClient(object state)
         {
             TcpClient client = (TcpClient)state;
+
             _clientHandler.Handle(client);
         }
 

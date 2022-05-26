@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Xunit;
 using FluentAssertions;
 using WebServer.Http;
+using WebServer.Enums;
+using WebServer.Http.Interfaces;
 
 namespace WebServer.Tests.HttpTests
 {
@@ -15,7 +17,8 @@ namespace WebServer.Tests.HttpTests
 
         public HttpRequestTests()
         {
-            _httpRequestString = "GET /favicon.ico HTTP/1.1\n" +
+            _httpRequestString = 
+                "GET /favicon.ico HTTP/1.1\n" +
                 "Host: 127.0.0.1:8888\n" +
                 "Connection: keep-alive\n" +
                 "sec-ch-ua: \" Not A;Brand\";v=\"99\", \"Chromium\";v=\"100\", \"Google Chrome\";v=\"100\"\n" +
@@ -37,7 +40,7 @@ namespace WebServer.Tests.HttpTests
             // Arrange
 
             // Act
-            HttpRequest httpRequest = new HttpRequest(_httpRequestString);
+            IHttpRequest httpRequest = new HttpRequest(_httpRequestString);
 
             // Assert
             httpRequest.Method.Should().Be(HttpMethod.GET);
@@ -48,7 +51,7 @@ namespace WebServer.Tests.HttpTests
             // Arrange
 
             // Act
-            HttpRequest httpRequest = new HttpRequest(_httpRequestString);
+            IHttpRequest httpRequest = new HttpRequest(_httpRequestString);
 
             // Assert
             httpRequest.Url.Should().Be("/favicon.ico");
@@ -59,10 +62,23 @@ namespace WebServer.Tests.HttpTests
             // Arrange
 
             // Act
-            HttpRequest httpRequest = new HttpRequest(_httpRequestString);
+            IHttpRequest httpRequest = new HttpRequest(_httpRequestString);
 
             // Assert
-            httpRequest.Cookie.Should().Be("id=a3fWa");
+            httpRequest.Cookie.TryGetValue("id", out string id);
+            
+            id.Should().Be("a3fWa");
+        }
+        [Fact]
+        public void Should_ReturnHeader()
+        {
+            // Arrange
+
+            // Act
+            IHttpRequest httpRequest = new HttpRequest(_httpRequestString);
+
+            // Assert
+            httpRequest.GetHeaderValue("Sec-Fetch-Site").Should().Be("same-origin");
         }
     }
 }

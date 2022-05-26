@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using WebServer.Enums;
 
-
-namespace WebServer.Http
+namespace WebServer.Http.Helpers
 {
     internal static class HttpRequestParseHelper
     {
