@@ -14,10 +14,10 @@ namespace WebServer
         private TcpListener _server;
         private IClientHandler _clientHandler;
         
-        public WebServer(IPAddress ip, int port)
+        public WebServer(IPAddress ip, int port, IClientHandler clientHandler)
         {
             _server = new TcpListener(ip, port);
-            _clientHandler = new ClientHandler();
+            _clientHandler = clientHandler;
         }
 
         public void Run()

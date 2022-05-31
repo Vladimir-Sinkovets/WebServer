@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebServer.Enums;
 using WebServer.Http.Interfaces;
 
 namespace WebServer.Http
@@ -10,7 +11,7 @@ namespace WebServer.Http
     public class HttpResponse : IHttpResponse
     {
         public string HttpVersion { get; set; }
-        public string StatusCode { get; set; }
+        public StatusCode StatusCode { get; set; } = StatusCode.OK;
         public string Content { get; set; }
         public string Connection
         {
@@ -30,7 +31,7 @@ namespace WebServer.Http
         {
             Cookie = new ResponseCookie();
             HttpVersion = "1.1";
-            StatusCode = "200";
+            StatusCode = StatusCode.OK;
             ContentType = "text/html";
             Connection = "Closed";
         }

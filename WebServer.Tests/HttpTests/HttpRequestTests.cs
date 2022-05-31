@@ -54,7 +54,7 @@ namespace WebServer.Tests.HttpTests
             IHttpRequest httpRequest = new HttpRequest(_httpRequestString);
 
             // Assert
-            httpRequest.Url.Should().Be("/favicon.ico");
+            httpRequest.Path.Should().Be("/favicon.ico");
         }
         [Fact]
         public void Should_ReturnHttpCookie()

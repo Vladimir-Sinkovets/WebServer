@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebServer
+namespace WebServer.Enums
 {
-    public interface IClientHandler
+    public enum StatusCode
     {
-        void Handle(TcpClient client);
+        OK = 200,
     }
 }

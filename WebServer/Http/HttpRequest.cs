@@ -9,7 +9,7 @@ namespace WebServer.Http
     public class HttpRequest : IHttpRequest
     {
         public HttpMethod Method { get; }
-        public string Url { get; }
+        public string Path { get; }
         public IRequestCookieCollection Cookie { get; }
 
         private IDictionary<string, string> _headers = new Dictionary<string, string>();
@@ -17,7 +17,7 @@ namespace WebServer.Http
         public HttpRequest(string httpData)
         {
             Method = HttpRequestParseHelper.GetMethod(httpData);
-            Url = HttpRequestParseHelper.GetUrl(httpData);
+            Path = HttpRequestParseHelper.GetUrl(httpData);
             _headers = HttpRequestParseHelper.GetHeaders(httpData);
 
             if (_headers.ContainsKey("Cookie"))

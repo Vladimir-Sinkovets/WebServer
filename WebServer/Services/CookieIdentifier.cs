@@ -9,17 +9,11 @@ namespace WebServer.Services
 {
     internal class CookieIdentifier : ICookieIdentifier
     {
-        private int _lastId = 0;
         public void SetId(IHttpContext context)
         {
             if (context.Request.Cookie.TryGetValue("id", out var id) == false)
             {
-                lock (this)
-                {
-                    context.Response.Cookie.Add("id", $"{_lastId}");
-
-                    _lastId++;
-                }
+                context.Response.Cookie.Add("id", $"{Guid.NewGuid()}");
             }
         }
 

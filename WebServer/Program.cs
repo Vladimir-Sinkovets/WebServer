@@ -12,7 +12,7 @@ namespace WebServer
         {
             IPAddress ip = IPAddress.Parse("127.0.0.1");
             int port = 8888;
-            IServer server = new WebServer(ip, port);
+            IServer server = new WebServer(ip, port, new ClientHandler());
             
             server.Run();
         }

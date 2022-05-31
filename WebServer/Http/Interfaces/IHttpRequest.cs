@@ -10,7 +10,7 @@ namespace WebServer.Http.Interfaces
     public interface IHttpRequest
     {
         HttpMethod Method { get; }
-        string Url { get; }
+        string Path { get; }
         IRequestCookieCollection Cookie { get; }
         public string GetHeaderValue(string headerName);
     }
