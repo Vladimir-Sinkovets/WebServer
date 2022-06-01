@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 
 namespace WebServer
 {
@@ -15,6 +16,10 @@ namespace WebServer
             IServer server = new WebServer(ip, port, new ClientHandler());
             
             server.Run();
+
+            Thread.Sleep(10000);
+
+            server.Stop();
         }
     }
 }

@@ -21,8 +21,9 @@ namespace WebServer
 
             while (client.Connected)
             {
-                byte[] bytes = new byte[4096];
+                byte[] bytes = new byte[client.ReceiveBufferSize];
                 int i = stream.Read(bytes, 0, bytes.Length);
+
                 string data = Encoding.ASCII.GetString(bytes, 0, i);
 
                 IHttpContext context = new HttpContext(data);

@@ -13,6 +13,7 @@ namespace WebServer
     {
         private TcpListener _server;
         private IClientHandler _clientHandler;
+        private bool _isRunning = false;
         
         public WebServer(IPAddress ip, int port, IClientHandler clientHandler)
         {
@@ -22,30 +23,33 @@ namespace WebServer
 
         public void Run()
         {
-            try
+            _isRunning = true;
+            Task.Run(() =>
             {
-                _server.Start();
-
-                while (true)
+                try
                 {
-                    Console.WriteLine("Waiting for connection...");
+                    _server.Start();
 
-                    TcpClient client = _server.AcceptTcpClient();
+                    while (_isRunning)
+                    {
+                        Console.WriteLine("Waiting for connection...");
 
-                    Console.WriteLine("Connected!");
+                        TcpClient client = _server.AcceptTcpClient();
 
-                    ThreadPool.QueueUserWorkItem(HandleClient, client);
-                    //HandleClient(client);
+                        Console.WriteLine("Connected!");
+
+                        ThreadPool.QueueUserWorkItem(HandleClient, client);
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-            finally
-            {
-                _server.Stop();
-            }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+                finally
+                {
+                    _server.Stop();
+                }
+            });
         }
 
         private void HandleClient(object state)
@@ -57,7 +61,7 @@ namespace WebServer
 
         public void Stop()
         {
-            _server.Stop();
+            _isRunning = false;
         }
     }
 }
