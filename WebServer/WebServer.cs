@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Threading;
-using System.Threading.Tasks;
 using WebServer.Http.Interfaces;
 
 namespace WebServer
@@ -21,31 +20,36 @@ namespace WebServer
         public void Run()
         {
             _isRunning = true;
-            Task.Run(() =>
+
+            Thread thread = new Thread(ListenClients);
+
+            thread.Start();
+        }
+
+        private void ListenClients()
+        {
+            try
             {
-                try
+                _server.Start();
+
+                while (_isRunning)
                 {
-                    _server.Start();
+                    Console.WriteLine("Waiting for connection...");
 
-                    while (_isRunning)
-                    {
-                        Console.WriteLine("Waiting for connection...");
+                    TcpClient client = _server.AcceptTcpClient();
 
-                        TcpClient client = _server.AcceptTcpClient();
+                    Console.WriteLine("Connected!");
 
-                        Console.WriteLine("Connected!");
-
-                        ThreadPool.QueueUserWorkItem(HandleClient, client);
-                    }
+                    ThreadPool.QueueUserWorkItem(HandleClient, client);
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.ToString());
-                }
-                {
-                    _server.Stop();
-                }
-            });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            {
+                _server.Stop();
+            }
         }
 
         private void HandleClient(object state)

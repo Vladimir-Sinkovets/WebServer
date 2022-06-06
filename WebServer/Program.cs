@@ -22,14 +22,13 @@ namespace WebServer
                 .Build();
 
             server.Run();
-
-            Thread.Sleep(1000000);
         }
 
         private static void ConfigureServices(IServiceCollection services)
         {
             services.Add(new ServiceDescriptor(typeof(ICookieIdentifier), typeof(CookieIdentifier), ServiceLifetime.Scoped));
         }
+
         private static void HandleRequest(IHttpContext context)
         {
             ICookieIdentifier identifier = context.ServiceProvider.GetService<ICookieIdentifier>();

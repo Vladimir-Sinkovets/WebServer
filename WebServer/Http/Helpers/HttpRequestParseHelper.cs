@@ -39,13 +39,13 @@ namespace WebServer.Http.Helpers
             }
         }
 
-        public static string GetUrl(string httpData)
+        public static string GetPath(string httpData)
         {
-            Regex urlRegex = new Regex(@"(?<=^\w+\s).+(?= )", RegexOptions.IgnoreCase);
-            string url = urlRegex.Match(httpData).Value
+            Regex pathRegex = new Regex(@"(?<=^\w+\s).+(?= )", RegexOptions.IgnoreCase);
+            string path = pathRegex.Match(httpData).Value
                 .ToLower();
 
-            return url;
+            return path;
         }
 
         public static IDictionary<string, string> GetHeaders(string httpData)

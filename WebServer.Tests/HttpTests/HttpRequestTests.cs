@@ -46,7 +46,7 @@ namespace WebServer.Tests.HttpTests
             httpRequest.Method.Should().Be(HttpMethod.GET);
         }
         [Fact]
-        public void Should_ReturnHttpUrl()
+        public void Should_ReturnHttpPath()
         {
             // Arrange
 

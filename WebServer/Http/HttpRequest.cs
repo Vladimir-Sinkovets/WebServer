@@ -17,7 +17,7 @@ namespace WebServer.Http
         public HttpRequest(string httpData)
         {
             Method = HttpRequestParseHelper.GetMethod(httpData);
-            Path = HttpRequestParseHelper.GetUrl(httpData);
+            Path = HttpRequestParseHelper.GetPath(httpData);
             _headers = HttpRequestParseHelper.GetHeaders(httpData);
 
             if (_headers.ContainsKey("Cookie"))
