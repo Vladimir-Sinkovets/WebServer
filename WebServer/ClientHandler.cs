@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 using WebServer.Http;
 using WebServer.Http.Interfaces;
 using WebServer.Services;
@@ -13,7 +10,15 @@ namespace WebServer
 {
     class ClientHandler : IClientHandler
     {
-        private ICookieIdentifier _identifier = new CookieIdentifier();
+        private IServiceProvider _serviceProvider;
+
+        private readonly Action<IHttpContext> _requestHandler;
+
+        public ClientHandler(IServiceProvider serviceProvider, Action<IHttpContext> requestHandler)
+        {
+            _serviceProvider = serviceProvider;
+            this._requestHandler = requestHandler;
+        }
 
         public void Handle(TcpClient client)
         {
@@ -26,36 +31,26 @@ namespace WebServer
 
                 string data = Encoding.ASCII.GetString(bytes, 0, i);
 
-                IHttpContext context = new HttpContext(data);
-                data = CreateResponse(context);
+                using (IServiceScope scope = _serviceProvider.CreateScope())
+                {
+                    IHttpContext context = new HttpContext(data, scope.ServiceProvider);
 
-                byte[] messsage = Encoding.ASCII.GetBytes(data);
-                stream.Write(messsage);
+                    _requestHandler.Invoke(context);
+
+                    SendData(stream, context);
+                }
             }
 
             client.Close();
         }
 
-        private string CreateResponse(IHttpContext context)
+        private void SendData(NetworkStream stream, IHttpContext context)
         {
-            _identifier.SetId(context);
+            string data = context.Response.ToString();
 
-            bool result = _identifier.TryGetCurrentClientId(context, out string id);
+            byte[] messsage = Encoding.ASCII.GetBytes(data);
 
-            string message;
-
-            if (result == true)
-            {
-                message = $"Your id = {id}";
-            }
-            else
-            {
-                message = $"Hi, new client";
-            }
-
-            context.Response.Content = $"<h1>Welcom to my server. {message}</h1>";
-
-            return context.Response.ToString();
+            stream.Write(messsage);
         }
     }
 }

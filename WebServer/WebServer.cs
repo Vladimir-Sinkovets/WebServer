@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using WebServer.Http.Interfaces;
 
 namespace WebServer
 {
@@ -14,11 +11,11 @@ namespace WebServer
         private TcpListener _server;
         private IClientHandler _clientHandler;
         private bool _isRunning = false;
-        
-        public WebServer(IPAddress ip, int port, IClientHandler clientHandler)
+
+        public WebServer(TcpListener listener, IServiceProvider serviceProvider, Action<IHttpContext> requestHandler)
         {
-            _server = new TcpListener(ip, port);
-            _clientHandler = clientHandler;
+            _server = listener;
+            _clientHandler = new ClientHandler(serviceProvider, requestHandler);
         }
 
         public void Run()
@@ -45,7 +42,6 @@ namespace WebServer
                 {
                     Console.WriteLine(ex.ToString());
                 }
-                finally
                 {
                     _server.Stop();
                 }

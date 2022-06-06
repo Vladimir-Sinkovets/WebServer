@@ -9,7 +9,7 @@ namespace WebServer.Services
 {
     public interface ICookieIdentifier
     {
-        public void SetId(IHttpContext context);
-        public bool TryGetCurrentClientId(IHttpContext context, out string id);
+        public Guid CurrentUserId { get; }
+        public Guid IdentifyUser(IHttpContext context);
     }
 }

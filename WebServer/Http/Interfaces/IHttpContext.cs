@@ -8,8 +8,8 @@ namespace WebServer.Http.Interfaces
 {
     public interface IHttpContext
     {
-        public IHttpRequest Request { get; set; }
-        public IHttpResponse Response { get; set; }
-
+        public IHttpRequest Request { get; }
+        public IHttpResponse Response { get; }
+        IServiceProvider ServiceProvider { get; }
     }
 }

@@ -7,23 +7,43 @@ using WebServer.Http.Interfaces;
 
 namespace WebServer.Services
 {
-    internal class CookieIdentifier : ICookieIdentifier
+    public class CookieIdentifier : ICookieIdentifier
     {
-        public void SetId(IHttpContext context)
+        private const string CookieHeaderName = "id";
+        public Guid CurrentUserId { get; private set; }
+
+        public Guid IdentifyUser(IHttpContext context)
         {
-            if (context.Request.Cookie.TryGetValue("id", out var id) == false)
+            bool result = context.Request.Cookie.TryGetValue(CookieHeaderName, out string cookieId);
+
+            if (result == true)
             {
-                context.Response.Cookie.Add("id", $"{Guid.NewGuid()}");
+                CurrentUserId = Guid.Parse(cookieId);
             }
+            else
+            {
+                CurrentUserId = Guid.NewGuid();
+
+                context.Response.Cookie.Add(CookieHeaderName, $"{CurrentUserId}");
+            }
+
+            return CurrentUserId;
         }
+        //public void SetCookie(IHttpContext context)
+        //{
+        //    if (context.Request.Cookie.TryGetValue(CookieHeaderName, out var id) == false)
+        //    {
+        //        context.Response.Cookie.Add(CookieHeaderName, $"{Guid.NewGuid()}");
+        //    }
+        //}
 
-        public bool TryGetCurrentClientId(IHttpContext context, out string id)
-        {
-            bool result = context.Request.Cookie.TryGetValue("id", out string cookieId);
+        //public bool TryGetCurrentClientId(IHttpContext context, out string id)
+        //{
+        //    bool result = context.Request.Cookie.TryGetValue(CookieHeaderName, out string cookieId);
 
-            id = cookieId;
+        //    id = cookieId;
 
-            return result;
-        }
+        //    return result;
+        //}
     }
 }
