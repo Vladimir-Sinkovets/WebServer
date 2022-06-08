@@ -1,71 +1,67 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
+using WebServer.Http.Interfaces;
 
 namespace WebServer
 {
     public class WebServer : IServer
     {
-        private TcpListener server;
-        
-        public WebServer(IPAddress ip, int port)
+        private TcpListener _server;
+        private IClientHandler _clientHandler;
+        private bool _isRunning = false;
+
+        public WebServer(TcpListener listener, IServiceProvider serviceProvider, Action<IHttpContext> requestHandler)
         {
-            server = new TcpListener(ip, port);
+            _server = listener;
+            _clientHandler = new ClientHandler(serviceProvider, requestHandler);
         }
 
         public void Run()
         {
+            _isRunning = true;
+
+            Thread thread = new Thread(ListenClients);
+
+            thread.Start();
+        }
+
+        private void ListenClients()
+        {
             try
             {
-                server.Start();
-                byte[] bytes = new byte[4096];
-                string data = null;
+                _server.Start();
 
-                while (true)
+                while (_isRunning)
                 {
                     Console.WriteLine("Waiting for connection...");
-                    
-                    TcpClient client = server.AcceptTcpClient();
+
+                    TcpClient client = _server.AcceptTcpClient();
 
                     Console.WriteLine("Connected!");
 
-                    NetworkStream stream = client.GetStream();
-
-                    while (client.Connected)
-                    {
-                        int i = stream.Read(bytes, 0, bytes.Length);
-                        data = Encoding.ASCII.GetString(bytes, 0, i);
-
-                        Console.WriteLine($"Received: {data}");
-                        
-                        data = "HTTP/1.1 200\nContent-Length:28\nContent-Type:text/html\nConnection:Closed\n\n<h1>Welcom to my server</h1>";
-
-                        byte[] messsage = Encoding.ASCII.GetBytes(data);
-                        stream.Write(messsage);
-
-                        Console.WriteLine($"Sent: {data}");
-                    }
-
-                    client.Close();
+                    ThreadPool.QueueUserWorkItem(HandleClient, client);
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
             }
-            finally
             {
-                server.Stop();
+                _server.Stop();
             }
+        }
+
+        private void HandleClient(object state)
+        {
+            TcpClient client = (TcpClient)state;
+
+            _clientHandler.Handle(client);
         }
 
         public void Stop()
         {
-            server.Stop();
+            _isRunning = false;
         }
     }
 }
