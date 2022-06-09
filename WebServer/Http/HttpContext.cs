@@ -13,9 +13,9 @@ namespace WebServer.Http
         public IHttpResponse Response { get; }
         public IServiceProvider ServiceProvider { get; }
 
-        public HttpContext(string requestData, IServiceProvider serviceProvider)
+        public HttpContext(string requestHeadData, byte[] body, IServiceProvider serviceProvider)
         {
-            Request = new HttpRequest(requestData);
+            Request = new HttpRequest(requestHeadData);
             Response = new HttpResponse();
             ServiceProvider = serviceProvider;
         }

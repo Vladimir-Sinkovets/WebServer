@@ -42,6 +42,7 @@ namespace WebServer.Http.Helpers
         public static string GetPath(string httpData)
         {
             Regex pathRegex = new Regex(@"(?<=^\w+\s).+(?= )", RegexOptions.IgnoreCase);
+
             string path = pathRegex.Match(httpData).Value
                 .ToLower();
 

@@ -9,7 +9,7 @@ namespace WebServer
     {
         private Action<IServiceCollection> _serviceCollectionConfiguring;
         private Action<IHttpContext> _requestHandler;
-        private TcpListener _listener;
+        private ITcpListener _listener;
 
         public IServer Build()
         {
@@ -36,12 +36,12 @@ namespace WebServer
             return this;
         }
 
-        public IWebServerBuilder SetListener(TcpListener listener)
+        public IWebServerBuilder SetListener(ITcpListener listener)
         {
             _listener = listener;
             return this;
         }
 
-        public static IWebServerBuilder CreateDefault() => new WebServerBuilder();
+        public static IWebServerBuilder CreateDefaultBuider() => new WebServerBuilder();
     }
 }

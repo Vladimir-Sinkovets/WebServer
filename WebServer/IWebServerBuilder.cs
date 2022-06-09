@@ -12,7 +12,7 @@ namespace WebServer
     public interface IWebServerBuilder
     {
         IWebServerBuilder SetHandler(Action<IHttpContext> action);
-        IWebServerBuilder SetListener(TcpListener listener);
+        IWebServerBuilder SetListener(ITcpListener listener);
         IWebServerBuilder ConfigureServices(Action<IServiceCollection> action);
         IServer Build();
     }

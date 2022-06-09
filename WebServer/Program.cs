@@ -13,9 +13,9 @@ namespace WebServer
         {
             IPAddress ip = IPAddress.Parse("127.0.0.1");
             int port = 8888;
-            TcpListener listener = new TcpListener(ip, port);
+            ITcpListener listener = new TcpListenerAdapter(new TcpListener(ip, port));
 
-            IServer server = WebServerBuilder.CreateDefault()
+            IServer server = WebServerBuilder.CreateDefaultBuider()
                 .SetListener(listener)
                 .ConfigureServices(ConfigureServices)
                 .SetHandler(HandleRequest)

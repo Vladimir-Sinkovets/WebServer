@@ -7,11 +7,11 @@ namespace WebServer
 {
     public class WebServer : IServer
     {
-        private TcpListener _server;
+        private ITcpListener _server;
         private IClientHandler _clientHandler;
         private bool _isRunning = false;
 
-        public WebServer(TcpListener listener, IServiceProvider serviceProvider, Action<IHttpContext> requestHandler)
+        public WebServer(ITcpListener listener, IServiceProvider serviceProvider, Action<IHttpContext> requestHandler)
         {
             _server = listener;
             _clientHandler = new ClientHandler(serviceProvider, requestHandler);

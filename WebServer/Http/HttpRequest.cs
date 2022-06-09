@@ -14,11 +14,11 @@ namespace WebServer.Http
 
         private IDictionary<string, string> _headers = new Dictionary<string, string>();
 
-        public HttpRequest(string httpData)
+        public HttpRequest(string headData)
         {
-            Method = HttpRequestParseHelper.GetMethod(httpData);
-            Path = HttpRequestParseHelper.GetPath(httpData);
-            _headers = HttpRequestParseHelper.GetHeaders(httpData);
+            Method = HttpRequestParseHelper.GetMethod(headData);
+            Path = HttpRequestParseHelper.GetPath(headData);
+            _headers = HttpRequestParseHelper.GetHeaders(headData);
 
             if (_headers.ContainsKey("Cookie"))
             {
