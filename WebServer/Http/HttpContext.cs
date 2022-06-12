@@ -13,10 +13,10 @@ namespace WebServer.Http
         public IHttpResponse Response { get; }
         public IServiceProvider ServiceProvider { get; }
 
-        public HttpContext(string requestHeadData, byte[] body, IServiceProvider serviceProvider)
+        public HttpContext(IHttpRequest request, IHttpResponse response, IServiceProvider serviceProvider)
         {
-            Request = new HttpRequest(requestHeadData);
-            Response = new HttpResponse();
+            Request = request;
+            Response = response;
             ServiceProvider = serviceProvider;
         }
     }

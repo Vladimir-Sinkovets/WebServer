@@ -10,58 +10,41 @@ namespace WebServer.Http
 {
     public class HttpResponse : IHttpResponse
     {
-        public string HttpVersion { get; set; }
-        public StatusCode StatusCode { get; set; } = StatusCode.OK;
-        public string Content { get; set; }
+        public byte[] Body { get; set; }
         public string Connection
         {
-            get => _headers["Connection"];
+            get => Headers["Connection"];
             set => SetHeaderValue("Connection", value);
         }
         public string ContentType
         {
-            get => _headers["Content-Type"];
+            get => Headers["Content-Type"];
             set => SetHeaderValue("Content-Type", value);
         }
-        public IResponseCookie Cookie { get; }
-
-        private IDictionary<string, string> _headers = new Dictionary<string, string>();
+        public string HttpVersion { get; set; }
+        public StatusCode StatusCode { get; set; }
+        public IDictionary<string, string> Headers { get; set; }
+        public IResponseCookieCollection Cookie { get; }
 
         public HttpResponse()
         {
-            Cookie = new ResponseCookie();
+            Cookie = new ResponseCookieCollection();
+            Headers = new Dictionary<string, string>();
             HttpVersion = "1.1";
             StatusCode = StatusCode.OK;
             ContentType = "text/html";
             Connection = "Closed";
         }
 
-        public override string ToString()
-        {
-            StringBuilder response = new StringBuilder($"HTTP/{HttpVersion} {StatusCode}\n");
-
-            response.Append($"Set-Cookie: {Cookie.ToString()}\n");
-            response.Append($"Content-Length: {Content.Length}\n");
-
-            foreach (var header in _headers)
-            {
-                response.Append($"{header.Key}: {header.Value}\n");
-            }
-
-            response.Append($"\n{Content}");
-
-            return response.ToString();
-        }
-
         private void SetHeaderValue(string headerName, string headerValue)
         {
-            if (!_headers.ContainsKey(headerName))
+            if (!Headers.ContainsKey(headerName))
             {
-                _headers.Add(headerName, headerValue);
+                Headers.Add(headerName, headerValue);
             }
             else
             {
-                _headers[headerName] = headerValue;
+                Headers[headerName] = headerValue;
             }
         }
     }

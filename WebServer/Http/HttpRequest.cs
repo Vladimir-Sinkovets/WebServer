@@ -8,30 +8,49 @@ namespace WebServer.Http
 {
     public class HttpRequest : IHttpRequest
     {
-        public HttpMethod Method { get; }
         public string Path { get; }
+        public byte[] Body { get; }
+        public string ContentType
+        {
+            get => Headers["Content-Type"];
+            set => SetHeaderValue("Content-Type", value);
+        }
+        public string QueryString { get; }
+        public HttpMethod Method { get; }
+        public IDictionary<string, string> Query { get; }
+        public IDictionary<string, string> Headers { get; }
         public IRequestCookieCollection Cookie { get; }
 
-        private IDictionary<string, string> _headers = new Dictionary<string, string>();
-
-        public HttpRequest(string headData)
+        public HttpRequest(string headData, byte[] body)
         {
-            Method = HttpRequestParseHelper.GetMethod(headData);
             Path = HttpRequestParseHelper.GetPath(headData);
-            _headers = HttpRequestParseHelper.GetHeaders(headData);
+            Query = HttpRequestParseHelper.GetQueryParameters(headData);
+            Method = HttpRequestParseHelper.GetMethod(headData);
+            Headers = HttpRequestParseHelper.GetHeaders(headData);
+            QueryString = HttpRequestParseHelper.GetQueryString(headData);
 
-            if (_headers.ContainsKey("Cookie"))
+            Body = body;
+
+            if (Headers.ContainsKey("Cookie"))
             {
-                Cookie = new RequestCookieCollection(_headers["Cookie"]);
+                Cookie = new RequestCookieCollection(Headers["Cookie"]);
             }
             else
             {
                 Cookie = new RequestCookieCollection();
             }
         }
-        public string GetHeaderValue(string headerName)
+
+        private void SetHeaderValue(string headerName, string headerValue)
         {
-            return _headers[headerName];
+            if (!Headers.ContainsKey(headerName))
+            {
+                Headers.Add(headerName, headerValue);
+            }
+            else
+            {
+                Headers[headerName] = headerValue;
+            }
         }
     }
 }

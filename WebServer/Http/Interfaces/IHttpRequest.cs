@@ -12,6 +12,11 @@ namespace WebServer.Http.Interfaces
         HttpMethod Method { get; }
         string Path { get; }
         IRequestCookieCollection Cookie { get; }
-        public string GetHeaderValue(string headerName);
+        byte[] Body { get; }
+        string ContentType { get; } 
+        string QueryString { get; }
+        IDictionary<string, string> Query { get; }
+        IDictionary<string, string> Headers { get; }
+
     }
 }

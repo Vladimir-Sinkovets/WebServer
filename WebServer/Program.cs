@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using WebServer.Http.Interfaces;
 using WebServer.Services;
@@ -27,6 +28,7 @@ namespace WebServer
         private static void ConfigureServices(IServiceCollection services)
         {
             services.Add(new ServiceDescriptor(typeof(ICookieIdentifier), typeof(CookieIdentifier), ServiceLifetime.Scoped));
+
         }
 
         private static void HandleRequest(IHttpContext context)
@@ -35,7 +37,7 @@ namespace WebServer
 
             identifier.IdentifyUser(context);
 
-            context.Response.Content = $"<h1>Welcome to my server. {identifier.CurrentUserId}</h1>";
+            context.Response.Body = Encoding.ASCII.GetBytes($"<h1>Welcome to my server. {identifier.CurrentUserId}</h1>");
         }
     }
 }

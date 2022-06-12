@@ -56,7 +56,7 @@ namespace WebServer
         {
             TcpClient client = (TcpClient)state;
 
-            _clientHandler.Handle(client);
+            _clientHandler.Handle(new TcpClientAdapter(client));
         }
 
         public void Stop()

@@ -9,6 +9,6 @@ namespace WebServer
 {
     public interface IClientHandler
     {
-        void Handle(TcpClient client);
+        void Handle(ITcpClient client);
     }
 }

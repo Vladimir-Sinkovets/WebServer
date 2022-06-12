@@ -18,7 +18,7 @@ namespace WebServer.Tests.HttpTests
         public HttpRequestTests()
         {
             _httpRequestString = 
-                "GET /favicon.ico HTTP/1.1\n" +
+                "GET /favicon.ico?id=10 HTTP/1.1\n" +
                 "Host: 127.0.0.1:8888\n" +
                 "Connection: keep-alive\n" +
                 "sec-ch-ua: \" Not A;Brand\";v=\"99\", \"Chromium\";v=\"100\", \"Google Chrome\";v=\"100\"\n" +
@@ -40,7 +40,7 @@ namespace WebServer.Tests.HttpTests
             // Arrange
 
             // Act
-            IHttpRequest httpRequest = new HttpRequest(_httpRequestString);
+            IHttpRequest httpRequest = new HttpRequest(_httpRequestString, null);
 
             // Assert
             httpRequest.Method.Should().Be(HttpMethod.GET);
@@ -51,7 +51,7 @@ namespace WebServer.Tests.HttpTests
             // Arrange
 
             // Act
-            IHttpRequest httpRequest = new HttpRequest(_httpRequestString);
+            IHttpRequest httpRequest = new HttpRequest(_httpRequestString, null);
 
             // Assert
             httpRequest.Path.Should().Be("/favicon.ico");
@@ -62,7 +62,7 @@ namespace WebServer.Tests.HttpTests
             // Arrange
 
             // Act
-            IHttpRequest httpRequest = new HttpRequest(_httpRequestString);
+            IHttpRequest httpRequest = new HttpRequest(_httpRequestString, null);
 
             // Assert
             httpRequest.Cookie.TryGetValue("id", out string id);
@@ -75,10 +75,32 @@ namespace WebServer.Tests.HttpTests
             // Arrange
 
             // Act
-            IHttpRequest httpRequest = new HttpRequest(_httpRequestString);
+            IHttpRequest httpRequest = new HttpRequest(_httpRequestString, null);
 
             // Assert
-            httpRequest.GetHeaderValue("Sec-Fetch-Site").Should().Be("same-origin");
+            httpRequest.Headers["Sec-Fetch-Site"].Should().Be("same-origin");
+        }
+        [Fact]
+        public void Should_ReturnQueryString()
+        {
+            // Arrange
+
+            // Act
+            IHttpRequest httpRequest = new HttpRequest(_httpRequestString, null);
+
+            // Assert
+            httpRequest.QueryString.Should().Be("id=10");
+        }
+        [Fact]
+        public void Should_ReturnQuery()
+        {
+            // Arrange
+
+            // Act
+            IHttpRequest httpRequest = new HttpRequest(_httpRequestString, null);
+
+            // Assert
+            httpRequest.Query["id"].Should().Be("10");
         }
     }
 }

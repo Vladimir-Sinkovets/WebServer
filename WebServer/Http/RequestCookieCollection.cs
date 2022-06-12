@@ -1,31 +1,26 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebServer.Http.Helpers;
 using WebServer.Http.Interfaces;
 
 namespace WebServer.Http
 {
     public class RequestCookieCollection : IRequestCookieCollection
     {
-        private IDictionary<string, string> _pairs = new Dictionary<string, string>();
-        public RequestCookieCollection()
-        {
+        private IDictionary<string, string> _pairs;
 
-        }
         public RequestCookieCollection(string cookieData)
         {
-            cookieData = cookieData.Replace(" ", "");
+            _pairs = HttpRequestParseHelper.GetCookieDictionary(cookieData);
+        }
 
-            string[] pairs = cookieData.Split(';');
-
-            foreach (var item in pairs)
-            {
-                string[] s = item.Split('=');
-
-                _pairs.Add(s[0], s[1]);
-            }
+        public RequestCookieCollection()
+        {
+            _pairs = new Dictionary<string, string>();
         }
 
         public bool ContainsKey(string key)
@@ -41,5 +36,9 @@ namespace WebServer.Http
 
             return result;
         }
+
+        public IEnumerator<KeyValuePair<string, string>> GetEnumerator() => _pairs.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => _pairs.GetEnumerator();
     }
 }
