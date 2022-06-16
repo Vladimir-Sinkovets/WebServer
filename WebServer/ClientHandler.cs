@@ -7,6 +7,7 @@ using WebServer.Http;
 using WebServer.Http.Interfaces;
 using WebServer.Services;
 using WebServer.Http.Helpers;
+using WebServer.Interfaces;
 
 namespace WebServer
 {

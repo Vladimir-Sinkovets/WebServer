@@ -1,4 +1,4 @@
-﻿namespace WebServer
+﻿namespace WebServer.Interfaces
 {
     public interface IServer
     {

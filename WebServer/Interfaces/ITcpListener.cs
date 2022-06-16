@@ -1,6 +1,6 @@
 ﻿using System.Net.Sockets;
 
-namespace WebServer
+namespace WebServer.Interfaces
 {
     public interface ITcpListener
     {

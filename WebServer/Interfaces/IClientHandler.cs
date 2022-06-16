@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebServer
+namespace WebServer.Interfaces
 {
     public interface IClientHandler
     {

@@ -1,7 +1,12 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using WebServer.Http.Interfaces;
+using WebServer.Interfaces;
+using WebServer.OptionsModels;
 
 namespace WebServer
 {
@@ -63,5 +68,24 @@ namespace WebServer
         {
             _isRunning = false;
         }
+
+        public static IServer CreateServer<T>() where T : IStartUp, new()
+        {
+            IServiceCollection services = new ServiceCollection();
+            IStartUp startUp = new T();
+
+            startUp.ConfigureServices(services);
+            IServiceProvider provider = services.BuildServiceProvider();
+
+            WebServerConfiguration configuration = provider.GetService<IOptions<WebServerConfiguration>>().Value;
+
+            IPAddress ip = IPAddress.Parse(configuration.IpAdress);
+            int port = configuration.Port;
+
+            ITcpListener listener = new TcpListenerAdapter(new TcpListener(ip, port));
+
+            return new WebServer(listener, provider, startUp.Handle);
+        }
+
     }
 }
