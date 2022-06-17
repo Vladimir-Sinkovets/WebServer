@@ -31,6 +31,11 @@ namespace WebServer
             thread.Start();
         }
 
+        public void Stop()
+        {
+            _isRunning = false;
+        }
+
         private void ListenClients()
         {
             try
@@ -62,11 +67,6 @@ namespace WebServer
             TcpClient client = (TcpClient)state;
 
             _clientHandler.Handle(new TcpClientAdapter(client));
-        }
-
-        public void Stop()
-        {
-            _isRunning = false;
         }
 
         public static IServer CreateServer<T>() where T : IStartUp, new()
