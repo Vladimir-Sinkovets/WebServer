@@ -16,6 +16,8 @@ namespace WebServer
         private IClientHandler _clientHandler;
         private bool _isRunning = false;
 
+        private IThreadPool _threadPool;
+
         public WebServer(ITcpListener listener, IServiceProvider serviceProvider, Action<IHttpContext> requestHandler)
         {
             _server = listener;
