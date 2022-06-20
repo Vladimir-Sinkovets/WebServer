@@ -26,10 +26,6 @@ namespace WebServer
             //    .Build();
 
             server.Run();
-
-            Thread.Sleep(1000);
-            Console.WriteLine("123213");
-            server.Stop();
         }
 
     }

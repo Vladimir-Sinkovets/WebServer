@@ -108,7 +108,7 @@ namespace WebServer.MyThreadPools
             }
             finally
             {
-                Console.WriteLine($"Thread {Thread.CurrentThread.Name} - has been stopped");
+                //Console.WriteLine($"Thread {Thread.CurrentThread.Name} - has been stopped");
                 if (!_workingEvent.SafeWaitHandle.IsClosed)
                     _workingEvent.Set();
             }

@@ -23,6 +23,8 @@ namespace WebServer
 
             identifier.IdentifyUser(context);
 
+            throw new Exception();
+
             context.Response.Body = Encoding.ASCII.GetBytes($"<h1>Welcome to my server. {identifier.CurrentUserId}</h1>");
         }
     }

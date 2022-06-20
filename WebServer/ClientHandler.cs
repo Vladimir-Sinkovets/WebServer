@@ -25,20 +25,27 @@ namespace WebServer
 
         public void Handle(ITcpClient client)
         {
-            NetworkStream stream = client.GetStream();
-            
-            while (client.Connected)
+            try
             {
-                using (IServiceScope scope = _serviceProvider.CreateScope())
+                NetworkStream stream = client.GetStream();
+            
+                while (client.Connected)
                 {
-                    byte[] data = ReadRequest(client, stream);
+                    using (IServiceScope scope = _serviceProvider.CreateScope())
+                    {
+                        byte[] data = ReadRequest(client, stream);
 
-                    IHttpContext context = CreateHttpContext(data, scope);
+                        IHttpContext context = CreateHttpContext(data, scope);
 
-                    _requestHandler.Invoke(context);
+                        _requestHandler.Invoke(context);
 
-                    SendData(stream, context);
+                        SendData(stream, context);
+                    }
                 }
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Отловленна ошибка");
             }
 
             client.Close();
