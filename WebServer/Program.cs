@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -25,6 +26,10 @@ namespace WebServer
             //    .Build();
 
             server.Run();
+
+            Thread.Sleep(1000);
+            Console.WriteLine("123213");
+            server.Stop();
         }
 
     }

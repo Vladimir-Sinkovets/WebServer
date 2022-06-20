@@ -8,7 +8,7 @@ namespace WebServer.OptionsModels
 {
     public class WebServerConfiguration
     {
-        public int ThreadCount { get; set; }
+        public int ThreadsCount { get; set; }
         public string IpAdress { get; set; }
         public int Port { get; set; }
     }

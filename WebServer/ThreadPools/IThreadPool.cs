@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebServer.Interfaces
+namespace WebServer.ThreadPools
 {
-    internal interface IThreadPool
+    internal interface IThreadPool : IDisposable
     {
         int MaxThreadsCount { get; }
-        void QueueUserWorkItem(Action action, object state);
+        void Execute(Action<object> action, object state);
     }
 }

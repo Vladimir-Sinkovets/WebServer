@@ -14,8 +14,7 @@ namespace WebServer
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Add(new ServiceDescriptor(typeof(ICookieIdentifier), typeof(CookieIdentifier), ServiceLifetime.Scoped));
-
+            services.AddScoped<ICookieIdentifier, CookieIdentifier>();
         }
 
         public void Handle(IHttpContext context)
