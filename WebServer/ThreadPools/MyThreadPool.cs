@@ -15,10 +15,11 @@ namespace WebServer.MyThreadPools
         private readonly string _name;
         private readonly Thread[] _threads;
         private readonly Queue<(Action<object> Work, object Parameter)> _works = new();
-        private volatile bool _canWork = true;
+        private volatile bool _isWorking = true;
+
 
         private readonly AutoResetEvent _workingEvent = new(false);
-        private readonly AutoResetEvent _executeEvent = new(true);
+        private readonly AutoResetEvent _queueEvent = new(true);
 
         private const int _disposeThreadJoinTimeout = 100;
 
@@ -35,10 +36,10 @@ namespace WebServer.MyThreadPools
             _threads = new Thread[maxThreadsCount];
             _name = name ?? GetHashCode().ToString("x");
 
-            Initialize();
+            InitializeThreadsArray();
         }
 
-        private void Initialize()
+        private void InitializeThreadsArray()
         {
             for (var i = 0; i < _threads.Length; i++)
             {
@@ -57,21 +58,19 @@ namespace WebServer.MyThreadPools
             }
         }
 
-        public void Execute(Action action) => Execute(_ => action(), null);
-
         public void Execute(Action<object> action, object parameter)
         {
-            if (!_canWork)
+            if (!_isWorking)
                 throw new InvalidOperationException("Попытка передать задание уничтоженному пулу потоков");
 
-            _executeEvent.WaitOne();
+            _queueEvent.WaitOne();
 
-            if (!_canWork)
+            if (!_isWorking)
                 throw new InvalidOperationException("Попытка передать задание уничтоженному пулу потоков");
 
             _works.Enqueue((action, parameter));
 
-            _executeEvent.Set();
+            _queueEvent.Set();
 
             _workingEvent.Set();
         }
@@ -80,14 +79,14 @@ namespace WebServer.MyThreadPools
         {
             try
             {
-                while (_canWork == true)
+                while (_isWorking == true)
                 {
                     _workingEvent.WaitOne();
 
-                    if (_canWork == false)
+                    if (_isWorking == false)
                         break;
 
-                    _executeEvent.WaitOne();
+                    _queueEvent.WaitOne();
                     
                     WaitWhile(_works.Count == 0);
 
@@ -96,7 +95,7 @@ namespace WebServer.MyThreadPools
                     if (_works.Count > 0)
                         _workingEvent.Set();
 
-                    _executeEvent.Set();
+                    _queueEvent.Set();
 
 
                     work(parameter);
@@ -118,20 +117,20 @@ namespace WebServer.MyThreadPools
         {
             while (condition == true)
             {
-                _executeEvent.Set();
+                _queueEvent.Set();
 
                 _workingEvent.WaitOne();
 
-                if (_canWork == false)
+                if (_isWorking == false)
                     break;
 
-                _executeEvent.WaitOne();
+                _queueEvent.WaitOne();
             }
         }
 
         public void Dispose()
         {
-            _canWork = false;
+            _isWorking = false;
 
             _workingEvent.Set();
 
@@ -141,7 +140,7 @@ namespace WebServer.MyThreadPools
                     thread.Interrupt();
             }
 
-            _executeEvent.Dispose();
+            _queueEvent.Dispose();
             _workingEvent.Dispose();
         }
     }

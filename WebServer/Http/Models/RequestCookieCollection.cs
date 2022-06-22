@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using WebServer.Http.Helpers;
 using WebServer.Http.Interfaces;
 
-namespace WebServer.Http
+namespace WebServer.Http.Models
 {
     public class RequestCookieCollection : IRequestCookieCollection
     {

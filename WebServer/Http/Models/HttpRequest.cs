@@ -4,7 +4,7 @@ using WebServer.Enums;
 using WebServer.Http.Helpers;
 using WebServer.Http.Interfaces;
 
-namespace WebServer.Http
+namespace WebServer.Http.Models
 {
     public class HttpRequest : IHttpRequest
     {
@@ -12,8 +12,8 @@ namespace WebServer.Http
         public byte[] Body { get; }
         public string ContentType
         {
-            get => Headers["Content-Type"];
-            set => SetHeaderValue("Content-Type", value);
+            get => Headers["content-type"];
+            set => SetHeaderValue("content-type", value);
         }
         public string QueryString { get; }
         public HttpMethod Method { get; }
@@ -31,9 +31,9 @@ namespace WebServer.Http
 
             Body = body;
 
-            if (Headers.ContainsKey("Cookie"))
+            if (Headers.ContainsKey("cookie"))
             {
-                Cookie = new RequestCookieCollection(Headers["Cookie"]);
+                Cookie = new RequestCookieCollection(Headers["cookie"]);
             }
             else
             {

@@ -7,13 +7,13 @@ using WebServer.Http.Interfaces;
 
 namespace WebServer.Http.Helpers
 {
-    public static class IHttpResponseExtensions
+    internal static class IHttpResponseExtensions
     {
         public static byte[] BuildResponseMessage(this IHttpResponse response)
         {
             StringBuilder responseHeader = new StringBuilder($"HTTP/{response.HttpVersion} {response.StatusCode}\n");
 
-            responseHeader.Append($"Set-Cookie: {response.Cookie.ToString()}\n");
+            responseHeader.Append($"Set-Cookie: {response.Cookie.ConvertToString()}\n");
             responseHeader.Append($"Content-Length: {response.Body.Length}\n");
 
             foreach (var header in response.Headers)

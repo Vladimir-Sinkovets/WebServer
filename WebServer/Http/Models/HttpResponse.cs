@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 using WebServer.Enums;
 using WebServer.Http.Interfaces;
 
-namespace WebServer.Http
+namespace WebServer.Http.Models
 {
     public class HttpResponse : IHttpResponse
     {
         public byte[] Body { get; set; }
         public string Connection
         {
-            get => Headers["Connection"];
-            set => SetHeaderValue("Connection", value);
+            get => Headers["connection"];
+            set => SetHeaderValue("connection", value);
         }
         public string ContentType
         {
-            get => Headers["Content-Type"];
-            set => SetHeaderValue("Content-Type", value);
+            get => Headers["content-type"];
+            set => SetHeaderValue("content-type", value);
         }
         public string HttpVersion { get; set; }
         public StatusCode StatusCode { get; set; }

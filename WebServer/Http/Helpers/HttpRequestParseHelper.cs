@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using WebServer.Enums;
+using WebServer.Http.Exceptions;
 
 namespace WebServer.Http.Helpers
 {
@@ -12,9 +10,17 @@ namespace WebServer.Http.Helpers
     {
         public static string GetPath(string httpData)
         {
+            if (httpData == null)
+                throw new ArgumentNullException($"Parameter {nameof(httpData)} must not be null");
+            if (httpData.Length == 0)
+                throw new HttpParseException($"{nameof(httpData)} must not be empty");
+
             string url = GetUrl(httpData);
 
             int pos = url.IndexOf('?');
+
+            if (pos == 0)
+                throw new HttpParseException($"Path cannot have length 0 ({nameof(httpData)})");
 
             if (pos == -1)
                 return url;
@@ -24,6 +30,11 @@ namespace WebServer.Http.Helpers
 
         public static string GetQueryString(string httpData)
         {
+            if (httpData == null)
+                throw new ArgumentNullException($"Parameter {nameof(httpData)} must not be null");
+            if (httpData.Length == 0)
+                throw new HttpParseException($"{nameof(httpData)} must not be empty");
+
             string url = GetUrl(httpData);
 
             int pos = url.IndexOf('?');
@@ -36,6 +47,11 @@ namespace WebServer.Http.Helpers
 
         public static HttpMethod GetMethod(string httpData)
         {
+            if (httpData == null)
+                throw new ArgumentNullException($"Parameter {nameof(httpData)} must not be null");
+            if (httpData.Length == 0)
+                throw new HttpParseException($"{nameof(httpData)} must not be empty");
+
             Regex methodRegex = new Regex(@"^\w+", RegexOptions.IgnoreCase);
             string methodName = methodRegex.Match(httpData).Value
                 .ToLower();
@@ -50,12 +66,17 @@ namespace WebServer.Http.Helpers
                 "connect" => HttpMethod.CONNECT,
                 "options" => HttpMethod.OPTIONS,
                 "trace" => HttpMethod.TRACE,
-                _ => throw new ArgumentException("Wrong http method name"),
+                _ => throw new HttpParseException("Wrong http method name"),
             };
         }
 
         public static IDictionary<string, string> GetHeaders(string httpData)
         {
+            if (httpData == null)
+                throw new ArgumentNullException($"Parameter {nameof(httpData)} must not be null");
+            if (httpData.Length == 0)
+                throw new HttpParseException($"{nameof(httpData)} must not be empty");
+
             Regex headerRegex = new Regex(@".+:.+");
 
             MatchCollection headerMatches = headerRegex.Matches(httpData);
@@ -65,10 +86,13 @@ namespace WebServer.Http.Helpers
             foreach (Match match in headerMatches)
             {
                 Regex headerNameRegex = new Regex(@"^.+(?=:)");
-                string headerName = headerNameRegex.Match(match.Value).Value;
+                string headerName = headerNameRegex.Match(match.Value).Value.ToLower();
 
                 Regex headerValueRegex = new Regex(@"(?<=: *)[^\s].+");
                 string headerValue = headerValueRegex.Match(match.Value).Value;
+
+                if (headerName == string.Empty || headerValue == string.Empty)
+                    throw new HttpParseException("Wrong headers' structure");
 
                 headers.Add(headerName, headerValue);
             }
@@ -78,6 +102,11 @@ namespace WebServer.Http.Helpers
 
         public static IDictionary<string, string> GetQueryParameters(string httpData)
         {
+            if (httpData == null)
+                throw new ArgumentNullException($"Parameter {nameof(httpData)} must not be null");
+            if (httpData.Length == 0)
+                throw new HttpParseException($"{nameof(httpData)} must not be empty");
+
             IDictionary<string, string> queryParameters = new Dictionary<string, string>();
 
             string queryString = GetQueryString(httpData);
@@ -91,6 +120,12 @@ namespace WebServer.Http.Helpers
             {
                 string[] pair = parameter.Split('=');
 
+                if(pair.Length != 2)
+                    throw new HttpParseException("Wrong queries' structure");
+                if (queryParameters.ContainsKey(pair[0]) == true)
+                    throw new HttpParseException("Query parameter with the same key already exists");
+
+
                 queryParameters.Add(pair[0], pair[1]);
             }
 
@@ -99,6 +134,9 @@ namespace WebServer.Http.Helpers
 
         public static IDictionary<string, string> GetCookieDictionary(string cookieData)
         {
+            if (cookieData == null)
+                throw new ArgumentNullException($"Parameter {nameof(cookieData)} must not be null");
+
             IDictionary<string, string> pairs = new Dictionary<string, string>();
 
             cookieData = cookieData.Replace(" ", "");
@@ -108,6 +146,9 @@ namespace WebServer.Http.Helpers
             foreach (var pairString in pairsString)
             {
                 string[] pair = pairString.Split('=');
+
+                if (pair.Length != 2)
+                    throw new HttpParseException("Wrong cookie structure");
 
                 pairs.Add(pair[0], pair[1]);
             }
@@ -121,6 +162,10 @@ namespace WebServer.Http.Helpers
 
             string url = pathRegex.Match(httpData).Value
                 .ToLower();
+
+            if (url.Length == 0)
+                throw new HttpParseException("Empty url");
+
             return url;
         }
     }

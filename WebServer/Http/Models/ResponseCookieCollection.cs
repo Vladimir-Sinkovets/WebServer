@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebServer.Http.Interfaces;
 
-namespace WebServer.Http
+namespace WebServer.Http.Models
 {
     public class ResponseCookieCollection : IResponseCookieCollection
     {
@@ -14,7 +14,7 @@ namespace WebServer.Http
 
         public void Add(string key, string value) => _pairs.Add(key, value);
 
-        public void Remove(string key) =>_pairs.Remove(key);
+        public void Remove(string key) => _pairs.Remove(key);
 
         public bool ContainValue(string value) => _pairs.Any(p => p.Value == value);
 
@@ -28,7 +28,7 @@ namespace WebServer.Http
 
             return result;
         }
-        
+
         public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
         {
             return _pairs.GetEnumerator();
@@ -39,18 +39,5 @@ namespace WebServer.Http
             return _pairs.GetEnumerator();
         }
 
-        public override string ToString()
-        {
-            if (_pairs.Count == 0)
-            {
-                return string.Empty;
-            }
-            else
-            {
-                return _pairs
-                    .Select(p => $"{p.Key}={p.Value}")
-                    .Aggregate((x, y) => x + y);
-            }
-        }
     }
 }

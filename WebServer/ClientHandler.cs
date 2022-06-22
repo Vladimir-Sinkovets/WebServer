@@ -8,10 +8,13 @@ using WebServer.Http.Interfaces;
 using WebServer.Services;
 using WebServer.Http.Helpers;
 using WebServer.Interfaces;
+using WebServer.Http.Models;
+using System.Collections.Generic;
+using WebServer.Http.Exceptions;
 
 namespace WebServer
 {
-    class ClientHandler : IClientHandler
+    internal class ClientHandler : IClientHandler
     {
         private IServiceProvider _serviceProvider;
 
@@ -25,30 +28,45 @@ namespace WebServer
 
         public void Handle(ITcpClient client)
         {
+            List<Exception> errors = new List<Exception>();
+            NetworkStream stream = null;
             try
             {
-                NetworkStream stream = client.GetStream();
+                stream = client.GetStream();
             
-                while (client.Connected)
+                while (client.Connected == true)
                 {
-                    using (IServiceScope scope = _serviceProvider.CreateScope())
-                    {
-                        byte[] data = ReadRequest(client, stream);
+                    byte[] data = ReadRequest(client, stream);
+                    
+                    using IServiceScope scope = _serviceProvider.CreateScope();
 
-                        IHttpContext context = CreateHttpContext(data, scope);
+                    IHttpContext context = CreateHttpContext(data, scope);
 
-                        _requestHandler.Invoke(context);
+                    _requestHandler.Invoke(context);
 
-                        SendData(stream, context);
-                    }
+                    SendData(stream, context);
                 }
             }
-            catch (Exception)
+            catch (HttpParseException ex)
             {
-                Console.WriteLine("Отловленна ошибка");
+                if (client.Connected == true)
+                {
+                    stream.Write(Encoding.ASCII.GetBytes("HTTP/1.1 400"));
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Ошибка : " + ex.ToString());
 
-            client.Close();
+                if(client.Connected == true)
+                {
+                    stream.Write(Encoding.ASCII.GetBytes("HTTP/1.1 500 Internal Server Error"));
+                }
+            }
+            finally
+            {
+                client.Close();
+            }
         }
 
         private IHttpContext CreateHttpContext(byte[] data, IServiceScope scope)

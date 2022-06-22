@@ -19,13 +19,12 @@ namespace WebServer
         {
             IServer server = WebServer.CreateServer<DefaultStartUp>();
 
-            //IServer server = WebServerBuilder.CreateDefaultBuider()
-            //    .SetListener(listener)
-            //    .ConfigureServices(ConfigureServices)
-            //    .SetHandler(HandleRequest)
-            //    .Build();
 
             server.Run();
+
+            Thread.Sleep(10000);
+
+            server.Stop();
         }
 
     }

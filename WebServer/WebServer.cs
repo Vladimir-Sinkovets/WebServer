@@ -44,6 +44,8 @@ namespace WebServer
             _server.Stop();
             _threadPool.Dispose();
             _mainThread.Interrupt();
+
+            Console.WriteLine("Server has stopped");
         }
 
         private void ListenClients()
@@ -62,6 +64,10 @@ namespace WebServer
 
                     _threadPool.Execute(HandleClient, client);
                 }
+            }
+            catch (ThreadInterruptedException ex)
+            {
+                //Console.WriteLine();
             }
             catch (Exception ex)
             {

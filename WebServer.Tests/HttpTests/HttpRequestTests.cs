@@ -8,6 +8,8 @@ using FluentAssertions;
 using WebServer.Http;
 using WebServer.Enums;
 using WebServer.Http.Interfaces;
+using WebServer.Http.Exceptions;
+using WebServer.Http.Models;
 
 namespace WebServer.Tests.HttpTests
 {
@@ -17,7 +19,7 @@ namespace WebServer.Tests.HttpTests
 
         public HttpRequestTests()
         {
-            _httpRequestString = 
+            _httpRequestString =
                 "GET /favicon.ico?id=10 HTTP/1.1\n" +
                 "Host: 127.0.0.1:8888\n" +
                 "Connection: keep-alive\n" +
@@ -66,7 +68,7 @@ namespace WebServer.Tests.HttpTests
 
             // Assert
             httpRequest.Cookie.TryGetValue("id", out string id);
-            
+
             id.Should().Be("a3fWa");
         }
         [Fact]
@@ -78,7 +80,7 @@ namespace WebServer.Tests.HttpTests
             IHttpRequest httpRequest = new HttpRequest(_httpRequestString, null);
 
             // Assert
-            httpRequest.Headers["Sec-Fetch-Site"].Should().Be("same-origin");
+            httpRequest.Headers["sec-fetch-site"].Should().Be("same-origin");
         }
         [Fact]
         public void Should_ReturnQueryString()
@@ -101,6 +103,166 @@ namespace WebServer.Tests.HttpTests
 
             // Assert
             httpRequest.Query["id"].Should().Be("10");
+        }
+        [Fact]
+        public void Should_ReturnContentType()
+        {
+            // Arrange
+            string httpRequestString = 
+                "POST /test/test.php HTTP/1.1\n" +
+                "Host: test.com\n" +
+                "Content-Type: text\n" +
+                "Connection : Keep-Alive\n" +
+                "\n" +
+                "name1 = value1 & name2 = value2";
+            // Act
+            IHttpRequest httpRequest = new HttpRequest(httpRequestString, null);
+
+            // Assert
+            httpRequest.ContentType.Should().Be("text");
+        }
+
+
+        [Fact]
+        public void Should_ThrowHttpParseException_WhenMethodIsWrong()
+        {
+            // Arrange
+            string httpRequestString =
+                "qweqqweqqw /test/test.php HTTP/1.1\n" +
+                "Host: test.com\n" +
+                "Content-Type: text\n" +
+                "Connection : Keep-Alive\n" +
+                "\n" +
+                "name1 = value1 & name2 = value2";
+            // Act
+            Action act = () => new HttpRequest(httpRequestString, null);
+
+            // Assert
+            act.Should().Throw<HttpParseException>();
+        }
+        [Fact]
+        public void Should_ThrowHttpParseException_WhenMethodIsEmpty()
+        {
+            // Arrange
+            string httpRequestString =
+                "/test/test.php HTTP/1.1\n" +
+                "Host: test.com\n" +
+                "Content-Type: text\n" +
+                "Connection : Keep-Alive\n" +
+                "\n" +
+                "name1 = value1 & name2 = value2";
+            // Act
+            Action act = () => new HttpRequest(httpRequestString, null);
+
+            // Assert
+            act.Should().Throw<HttpParseException>();
+        }
+        [Fact]
+        public void Should_ThrowHttpParseException_WhenPathIsEmpty()
+        {
+            // Arrange
+            string httpRequestString =
+                "GET  HTTP/1.1\n" +
+                "Host: test.com\n" +
+                "Content-Type: text\n" +
+                "Connection : Keep-Alive\n" +
+                "\n" +
+                "name1 = value1 & name2 = value2";
+            // Act
+            Action act = () => new HttpRequest(httpRequestString, null);
+
+            // Assert
+            act.Should().Throw<HttpParseException>();
+        }
+        [Fact]
+        public void Should_ThrowHttpParseException_WhenCookieIsWrong()
+        {
+            // Arrange
+            string httpRequestString =
+                "POST test.php HTTP/1.1\n" +
+                "Host: test.com\n" +
+                "Content-Type: text\n" +
+                "Cookie: text\n" +
+                "Connection : Keep-Alive\n" +
+                "\n" +
+                "name1 = value1 & name2 = value2";
+            // Act
+            Action act = () => new HttpRequest(httpRequestString, null);
+
+            // Assert
+            act.Should().Throw<HttpParseException>();
+        }
+        [Fact]
+        public void Should_ThrowHttpParseException_WhenHeaderIsWrong()
+        {
+            // Arrange
+            string httpRequestString =
+                "POST test.php HTTP/1.1\n" +
+                "Host -> test.com\n" +
+                "Content-Type: text\n" +
+                "Cookie: text\n" +
+                "Connection : Keep-Alive\n" +
+                "\n" +
+                "name1 = value1 & name2 = value2";
+            // Act
+            Action act = () => new HttpRequest(httpRequestString, null);
+
+            // Assert
+            act.Should().Throw<HttpParseException>();
+        }
+        [Fact]
+        public void Should_ThrowHttpParseException_WhenHeaderIsEmpty()
+        {
+            // Arrange
+            string httpRequestString =
+                "POST test.php HTTP/1.1\n" +
+                "Host : \n" +
+                "Content-Type: text\n" +
+                "Cookie: text\n" +
+                "Connection : Keep-Alive\n" +
+                "\n" +
+                "name1 = value1 & name2 = value2";
+            // Act
+            Action act = () => new HttpRequest(httpRequestString, null);
+
+            // Assert
+            act.Should().Throw<HttpParseException>();
+        }
+        [Fact]
+        public void Should_ThrowHttpParseException_WhenUrlContainSameQueryParameters()
+        {
+            // Arrange
+            string httpRequestString =
+                "POST test.php?test1=test&test1=test2 HTTP/1.1\n" +
+                "Host -> test.com\n" +
+                "Content-Type: text\n" +
+                "Cookie: text\n" +
+                "Connection : Keep-Alive\n" +
+                "\n" +
+                "name1 = value1 & name2 = value2";
+            // Act
+            Action act = () => new HttpRequest(httpRequestString, null);
+
+            // Assert
+            act.Should().Throw<HttpParseException>();
+        }
+        [Fact]
+        public void Should_ThrowHttpParseException_WhenQueryParameterHasNotValue()
+        {
+            // Arrange
+            string httpRequestString =
+                "POST test.php?test1=test&test2 HTTP/1.1\n" +
+                "Host -> test.com\n" +
+                "Content-Type: text\n" +
+                "Cookie: text\n" +
+                "Connection : Keep-Alive\n" +
+                "\n" +
+                "name1 = value1 & name2 = value2";
+            // Act
+            Action act = () => new HttpRequest(httpRequestString, null);
+
+            // Assert
+            act.Should().Throw<HttpParseException>();
         }
     }
 }
