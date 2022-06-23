@@ -33,7 +33,8 @@ namespace WebServer.Http.Models
 
             if (Headers.ContainsKey("cookie"))
             {
-                Cookie = new RequestCookieCollection(Headers["cookie"]);
+                var cookiePairs = HttpRequestParseHelper.GetCookieDictionary(Headers["cookie"]);
+                Cookie = new RequestCookieCollection(cookiePairs);
             }
             else
             {

@@ -51,7 +51,7 @@ namespace WebServer
             {
                 if (client.Connected == true)
                 {
-                    stream.Write(Encoding.ASCII.GetBytes("HTTP/1.1 400"));
+                    stream.Write(Encoding.ASCII.GetBytes("HTTP/1.1 400 Bad Request"));
                 }
             }
             catch (Exception ex)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebServer.Enums;
 using WebServer.Http.Interfaces;
 
 namespace WebServer.Http.Helpers
@@ -11,10 +12,26 @@ namespace WebServer.Http.Helpers
     {
         public static byte[] BuildResponseMessage(this IHttpResponse response)
         {
-            StringBuilder responseHeader = new StringBuilder($"HTTP/{response.HttpVersion} {response.StatusCode}\n");
+            StringBuilder responseHeader = new StringBuilder($"HTTP/{response.HttpVersion} ");
 
-            responseHeader.Append($"Set-Cookie: {response.Cookie.ConvertToString()}\n");
-            responseHeader.Append($"Content-Length: {response.Body.Length}\n");
+            switch (response.StatusCode)
+            {
+                case StatusCode.OK:
+                    responseHeader.Append($"200 {response.StatusCode} \n");
+                    break;
+                default:
+                    throw new NotImplementedException($"There is no implementation for {response.StatusCode} case");
+            }
+
+            if (response.Cookie != null && response.Cookie.Count() != 0)
+            {
+                responseHeader.Append($"Set-Cookie: {response.Cookie.ConvertToString()}\n");
+            }
+
+            if (response.Body != null)
+            {
+                responseHeader.Append($"Content-Length: {response.Body.Length}\n");
+            }
 
             foreach (var header in response.Headers)
             {
@@ -25,7 +42,14 @@ namespace WebServer.Http.Helpers
 
             byte[] headerOfMessage = Encoding.ASCII.GetBytes(responseHeader.ToString());
 
-            return headerOfMessage.Concat(response.Body).ToArray();
+            if (response.Body != null)
+            {
+                return headerOfMessage.Concat(response.Body).ToArray();
+            }
+            else
+            {
+                return headerOfMessage;
+            }
         }
     }
 }

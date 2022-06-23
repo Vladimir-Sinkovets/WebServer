@@ -9,7 +9,7 @@ using WebServer.ThreadPools;
 
 namespace WebServer.MyThreadPools
 {
-    public class MyThreadPool : IThreadPool
+    internal class MyThreadPool : IThreadPool
     {
         private readonly ThreadPriority _prioroty;
         private readonly string _name;

@@ -13,9 +13,9 @@ namespace WebServer.Http.Models
     {
         private IDictionary<string, string> _pairs;
 
-        public RequestCookieCollection(string cookieData)
+        public RequestCookieCollection(IDictionary<string, string> pairs)
         {
-            _pairs = HttpRequestParseHelper.GetCookieDictionary(cookieData);
+            _pairs = pairs;
         }
 
         public RequestCookieCollection()

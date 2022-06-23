@@ -48,6 +48,21 @@ namespace WebServer
             Console.WriteLine("Server has stopped");
         }
 
+
+        public static IServer CreateServer<TStartUp>() where TStartUp : IStartUp, new()
+        {
+            IServiceCollection services = new ServiceCollection();
+
+            IStartUp startUp = new TStartUp();
+
+            startUp.ConfigureServices(services);
+            AddWebServerConfigFile(services);
+
+            return InstantiateWebServer(services, startUp);
+        }
+
+
+
         private void ListenClients()
         {
             try
@@ -84,18 +99,6 @@ namespace WebServer
             TcpClient client = (TcpClient)state;
 
             _clientHandler.Handle(new TcpClientAdapter(client));
-        }
-
-        public static IServer CreateServer<TStartUp>() where TStartUp : IStartUp, new()
-        {
-            IServiceCollection services = new ServiceCollection();
-
-            IStartUp startUp = new TStartUp();
-
-            startUp.ConfigureServices(services);
-            AddWebServerConfigFile(services);
-
-            return InstantiateWebServer(services, startUp);
         }
 
         private static IServer InstantiateWebServer(IServiceCollection services, IStartUp startUp)
