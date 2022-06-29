@@ -17,7 +17,7 @@ namespace WebServer
     {
         static void Main(string[] args)
         {
-            IServer server = WebServer.CreateServer<DefaultStartUp>();
+            IServer server = WebServer.CreateServer<DefaultStartUp>(); 
 
 
             server.Run();
