@@ -21,7 +21,7 @@ namespace WebServer
 
             IServer server = DIContainer.GetService<IServer>();
 
-            server.SetHandler(Handle);
+            //server.SetHandler(Handle);
             server.Run();
 
             //Thread.Sleep(10000);
@@ -42,6 +42,8 @@ namespace WebServer
 
         private static void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IServerCollection, ServerCollection>();
+            
             IConfiguration configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .Build();

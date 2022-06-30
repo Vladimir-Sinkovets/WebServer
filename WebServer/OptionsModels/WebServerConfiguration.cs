@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +12,10 @@ namespace WebServer.OptionsModels
         public int ThreadsCount { get; set; }
         public string IpAdress { get; set; }
         public int Port { get; set; }
+
+        internal IConfiguration GetSection(string v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

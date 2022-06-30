@@ -16,18 +16,20 @@ namespace WebServer
 {
     internal class ClientHandler : IClientHandler
     {
-        private IServiceProvider _serviceProvider;
+        private readonly IServiceProvider _serviceProvider;
 
         public Action<IHttpContext> RequestHandler { get; set; }
+
 
         public ClientHandler(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
 
+
         public void Handle(ITcpClient client)
         {
-            List<Exception> errors = new List<Exception>();
+            List<Exception> errors = new();
             NetworkStream stream = null;
             try
             {
@@ -67,6 +69,7 @@ namespace WebServer
                 client.Close();
             }
         }
+
 
         private IHttpContext CreateHttpContext(byte[] data, IServiceScope scope)
         {

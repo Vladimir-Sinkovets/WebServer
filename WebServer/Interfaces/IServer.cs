@@ -8,5 +8,6 @@ namespace WebServer.Interfaces
         void Run();
         void Stop();
         void SetHandler(Action<IHttpContext> action);
+        string Name { get; set; }
     }
 }

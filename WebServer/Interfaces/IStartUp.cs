@@ -10,7 +10,7 @@ namespace WebServer.Interfaces
 {
     public interface IStartUp
     {
-        void ConfigureServices(IServiceCollection services);
+        void ConfigureServices(IServerCollection services);
         void Handle(IHttpContext context);
     }
 }

@@ -15,28 +15,35 @@ namespace WebServer
 {
     public class WebServer : IServer
     {
-        private ITcpListener _server;
-        private IClientHandler _clientHandler;
-        private bool _isRunning = false;
-        private IThreadPool _threadPool;
         private Thread _mainThread;
+        private readonly ITcpListener _listener;
+        private readonly IThreadPool _threadPool;
+        private readonly IClientHandler _clientHandler;
+        private readonly WebServerConfiguration _options;
+
+        private bool _isRunning = false;
+
 
         public string Name { get; set; }
+
         public Action<IHttpContext> Handler { get; set; }
 
         public WebServer(IOptions<WebServerConfiguration> options)
         {
-            WebServerConfiguration configuration = options.Value;
+            _options = options.Value;
 
-            _server = new TcpListenerAdapter(new TcpListener(IPAddress.Parse(configuration.IpAdress), configuration.Port));
+            _listener = new TcpListenerAdapter(new TcpListener(IPAddress.Parse(_options.IpAdress), _options.Port));
 
             _clientHandler = new ClientHandler(DIContainer.Provider);
 
-            _threadPool = new MyThreadPool(configuration.ThreadsCount);
+            _threadPool = new MyThreadPool(_options.ThreadsCount);
         }
 
         public void Run()
         {
+            if (Handler == null)
+                throw new Exception($"Method \"{nameof(SetHandler)}\" must be called before \"{nameof(Run)}\" method");
+
             _isRunning = true;
 
             _mainThread = new Thread(ListenClients);
@@ -47,7 +54,7 @@ namespace WebServer
         public void Stop()
         {
             _isRunning = false;
-            _server.Stop();
+            _listener.Stop();
             _threadPool.Dispose();
             _mainThread.Interrupt();
 
@@ -64,13 +71,13 @@ namespace WebServer
         {
             try
             {
-                _server.Start();
+                _listener.Start();
 
                 while (_isRunning)
                 {
                     Console.WriteLine("Waiting for connection...");
 
-                    TcpClient client = _server.AcceptTcpClient();
+                    TcpClient client = _listener.AcceptTcpClient();
 
                     Console.WriteLine("Connected!");
 
@@ -87,7 +94,7 @@ namespace WebServer
             }
             finally
             {
-                _server.Stop();
+                _listener.Stop();
             }
         }
 
@@ -97,6 +104,5 @@ namespace WebServer
 
             _clientHandler.Handle(new TcpClientAdapter(client));
         }
-
     }
 }
