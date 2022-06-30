@@ -21,12 +21,18 @@ namespace WebServer
         private IThreadPool _threadPool;
         private Thread _mainThread;
 
+        public string Name { get; set; }
+        public Action<IHttpContext> Handler { get; set; }
 
-        public WebServer(ITcpListener listener, IServiceProvider serviceProvider, Action<IHttpContext> requestHandler, int threadsCount = 10)
+        public WebServer(IOptions<WebServerConfiguration> options)
         {
-            _server = listener;
-            _clientHandler = new ClientHandler(serviceProvider, requestHandler);
-            _threadPool = new MyThreadPool(threadsCount);
+            WebServerConfiguration configuration = options.Value;
+
+            _server = new TcpListenerAdapter(new TcpListener(IPAddress.Parse(configuration.IpAdress), configuration.Port));
+
+            _clientHandler = new ClientHandler(DIContainer.Provider);
+
+            _threadPool = new MyThreadPool(configuration.ThreadsCount);
         }
 
         public void Run()
@@ -48,19 +54,10 @@ namespace WebServer
             Console.WriteLine("Server has stopped");
         }
 
-
-        public static IServer CreateServer<TStartUp>() where TStartUp : IStartUp, new()
+        public void SetHandler(Action<IHttpContext> action)
         {
-            IServiceCollection services = new ServiceCollection();
-
-            IStartUp startUp = new TStartUp();
-
-            startUp.ConfigureServices(services);
-            AddWebServerConfigFile(services);
-
-            return InstantiateWebServer(services, startUp);
+            _clientHandler.RequestHandler = action;
         }
-
 
 
         private void ListenClients()
@@ -101,25 +98,5 @@ namespace WebServer
             _clientHandler.Handle(new TcpClientAdapter(client));
         }
 
-        private static IServer InstantiateWebServer(IServiceCollection services, IStartUp startUp)
-        {
-            IServiceProvider provider = services.BuildServiceProvider();
-
-            WebServerConfiguration webConfig = provider.GetService<IOptions<WebServerConfiguration>>().Value;
-
-            var ip = IPAddress.Parse(webConfig.IpAdress);
-            var port = webConfig.Port;
-            var threadsCount = webConfig.ThreadsCount;
-
-            ITcpListener listener = new TcpListenerAdapter(new TcpListener(ip, port));
-
-            return new WebServer(listener, provider, startUp.Handle, threadsCount);
-        }
-
-        private static void AddWebServerConfigFile(IServiceCollection services)
-        {
-            IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-            services.Configure<WebServerConfiguration>(configuration.GetSection("WebServerSettings"));
-        }
     }
 }

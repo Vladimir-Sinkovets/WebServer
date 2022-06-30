@@ -20,9 +20,6 @@ namespace WebServer
             Provider = services.BuildServiceProvider();
         }
 
-        static DIContainer()
-        {
-            
-        }
+        public static TService GetService<TService>() => Provider.GetService<TService>();
     }
 }

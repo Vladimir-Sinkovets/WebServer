@@ -18,12 +18,11 @@ namespace WebServer
     {
         private IServiceProvider _serviceProvider;
 
-        private readonly Action<IHttpContext> _requestHandler;
+        public Action<IHttpContext> RequestHandler { get; set; }
 
-        public ClientHandler(IServiceProvider serviceProvider, Action<IHttpContext> requestHandler)
+        public ClientHandler(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
-            _requestHandler = requestHandler;
         }
 
         public void Handle(ITcpClient client)
@@ -42,7 +41,7 @@ namespace WebServer
 
                     IHttpContext context = CreateHttpContext(data, scope);
 
-                    _requestHandler.Invoke(context);
+                    RequestHandler.Invoke(context);
 
                     SendData(stream, context);
                 }
