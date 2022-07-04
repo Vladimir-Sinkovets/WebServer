@@ -7,12 +7,15 @@ using System.Threading.Tasks;
 
 namespace WebServer
 {
-    public static class DIContainer
+    public class DIContainer
     {
         public static ServiceProvider Provider { get; private set; }
 
         public static void ConfigureServices(Action<IServiceCollection> action)
         {
+            if (Provider != null)
+                return;
+
             IServiceCollection services = new ServiceCollection();
 
             action(services);

@@ -29,21 +29,5 @@ namespace WebServer.Services
 
             return CurrentUserId;
         }
-        //public void SetCookie(IHttpContext context)
-        //{
-        //    if (context.Request.Cookie.TryGetValue(CookieHeaderName, out var id) == false)
-        //    {
-        //        context.Response.Cookie.Add(CookieHeaderName, $"{Guid.NewGuid()}");
-        //    }
-        //}
-
-        //public bool TryGetCurrentClientId(IHttpContext context, out string id)
-        //{
-        //    bool result = context.Request.Cookie.TryGetValue(CookieHeaderName, out string cookieId);
-
-        //    id = cookieId;
-
-        //    return result;
-        //}
     }
 }

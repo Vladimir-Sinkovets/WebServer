@@ -11,7 +11,7 @@ using WebServer.OptionsModels;
 
 namespace WebServer.Extensions.ServiceCollection
 {
-    public static class ServiceCollectionExtention
+    public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddServer(this IServiceCollection services, string sectionName)
         {
@@ -24,14 +24,16 @@ namespace WebServer.Extensions.ServiceCollection
                         .AddJsonFile("appsettings.json")
                         .Build();
 
-                    var section = config.GetSection(sectionName);
+                    var section = config.GetSection(sectionName)
+                        .GetSection("WebServerSettings");
 
-                    serverConfig.IpAdress = section["threadsCount"];
-                    serverConfig.Port = section[];
-                    serverConfig.ThreadsCount = default;
+                    serverConfig.IpAddress = section["ipAddress"];
+                    serverConfig.Port = int.Parse(section["port"]);
+                    serverConfig.ThreadsCount = int.Parse(section["threadsCount"]);
+                    serverConfig.Name = section["name"];
 
                     IOptions<WebServerConfiguration> opt = Options.Create(serverConfig);
-                    return default;
+                    return new WebServer(opt);
                 });
         }
     }

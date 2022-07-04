@@ -23,16 +23,15 @@ namespace WebServer
 
         private bool _isRunning = false;
 
-
         public string Name { get; set; }
-
-        public Action<IHttpContext> Handler { get; set; }
 
         public WebServer(IOptions<WebServerConfiguration> options)
         {
             _options = options.Value;
 
-            _listener = new TcpListenerAdapter(new TcpListener(IPAddress.Parse(_options.IpAdress), _options.Port));
+            Name = _options.Name;
+
+            _listener = new TcpListenerAdapter(new TcpListener(IPAddress.Parse(_options.IpAddress), _options.Port));
 
             _clientHandler = new ClientHandler(DIContainer.Provider);
 
@@ -41,7 +40,7 @@ namespace WebServer
 
         public void Run()
         {
-            if (Handler == null)
+            if (_clientHandler.RequestHandler == null)
                 throw new Exception($"Method \"{nameof(SetHandler)}\" must be called before \"{nameof(Run)}\" method");
 
             _isRunning = true;
@@ -86,11 +85,11 @@ namespace WebServer
             }
             catch (ThreadInterruptedException ex)
             {
-                //Console.WriteLine();
+
             }
             catch (Exception ex)
             {
-                //Console.WriteLine(ex.ToString());
+
             }
             finally
             {

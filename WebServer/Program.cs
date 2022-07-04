@@ -10,6 +10,8 @@ using WebServer.Http.Interfaces;
 using WebServer.Interfaces;
 using WebServer.OptionsModels;
 using WebServer.Services;
+using WebServer.Extensions.ServiceCollection;
+using WebServer.Extensions.ServerCollection;
 
 namespace WebServer
 {
@@ -19,14 +21,11 @@ namespace WebServer
         {
             DIContainer.ConfigureServices(ConfigureServices);
 
-            IServer server = DIContainer.GetService<IServer>();
+            IServer server = DIContainer.GetService<IServerCollection>()
+                .GetServerByName("server_2");
 
-            //server.SetHandler(Handle);
+            server.SetHandler(Handle);
             server.Run();
-
-            //Thread.Sleep(10000);
-
-            //server.Stop();
         }
 
         private static void Handle(IHttpContext context)
@@ -43,14 +42,10 @@ namespace WebServer
         private static void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IServerCollection, ServerCollection>();
-            
-            IConfiguration configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .Build();
 
-            services.Configure<WebServerConfiguration>(configuration.GetSection("WebServerSettings"));
+            services.AddServer("Server_1");
+            services.AddServer("Server_2");
 
-            services.AddSingleton<IServer, WebServer>();
             services.AddScoped<ICookieIdentifier, CookieIdentifier>();
         }
     }
