@@ -34,8 +34,6 @@ namespace WebServer
 
             identifier.IdentifyUser(context);
 
-            throw new Exception();
-
             context.Response.Body = Encoding.ASCII.GetBytes($"<h1>Welcome to my server. {identifier.CurrentUserId}</h1>");
         }
 
@@ -43,8 +41,8 @@ namespace WebServer
         {
             services.AddSingleton<IServerCollection, ServerCollection>();
 
-            services.AddServer("Server_1");
-            services.AddServer("Server_2");
+            services.AddServer(sectionName: "Server_1");
+            services.AddServer(sectionName: "Server_2");
 
             services.AddScoped<ICookieIdentifier, CookieIdentifier>();
         }

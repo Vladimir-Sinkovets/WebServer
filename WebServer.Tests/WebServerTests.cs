@@ -221,14 +221,14 @@ namespace WebServer.Tests
                 });
                 thread.Start(state);
             }
-            Thread.Sleep(2000);
+            Thread.Sleep(400);
             server.Stop();
 
             // Assert
 
             responses.Count.Should().Be(clientsCount);
         }
-        class Parameters
+        private class Parameters
         {
             public int Port{ get; set; }
             public string Ip { get; set; }
