@@ -37,15 +37,15 @@ namespace WebServer
             
                 while (client.Connected == true)
                 {
-                    byte[] data = ReadRequest(client, stream);
-                    
                     using IServiceScope scope = _serviceProvider.CreateScope();
 
+                    byte[] data = ReadRequest(client, stream);
+                    
                     IHttpContext context = CreateHttpContext(data, scope);
 
                     RequestHandler.Invoke(context);
 
-                    SendData(stream, context);
+                    SendRequest(stream, context);
                 }
             }
             catch (HttpParseException ex)
@@ -113,7 +113,7 @@ namespace WebServer
             return i + 1;
         }
 
-        private void SendData(NetworkStream stream, IHttpContext context)
+        private void SendRequest(NetworkStream stream, IHttpContext context)
         {
             stream.Write(context.Response.BuildResponseMessage());
         }

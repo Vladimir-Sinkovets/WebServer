@@ -19,6 +19,7 @@ namespace WebServer
         private readonly ITcpListener _listener;
         private readonly IThreadPool _threadPool;
         private readonly IClientHandler _clientHandler;
+
         private readonly WebServerConfiguration _options;
 
         private bool _isRunning = false;
