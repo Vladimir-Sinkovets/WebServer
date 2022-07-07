@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WebServer.Http.Interfaces;
 
 namespace WebServer.Http.Models
 {
     public class ResponseCookieCollection : IResponseCookieCollection
     {
-        private IDictionary<string, string> _pairs = new Dictionary<string, string>();
+        private readonly IDictionary<string, string> _pairs = new Dictionary<string, string>();
 
         public void Add(string key, string value) => _pairs.Add(key, value);
 

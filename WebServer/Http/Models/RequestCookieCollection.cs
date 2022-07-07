@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebServer.Http.Helpers;
 using WebServer.Http.Interfaces;
 
 namespace WebServer.Http.Models
 {
     public class RequestCookieCollection : IRequestCookieCollection
     {
-        private IDictionary<string, string> _pairs;
+        private readonly IDictionary<string, string> _pairs;
 
         public RequestCookieCollection(IDictionary<string, string> pairs)
         {

@@ -42,7 +42,7 @@ namespace WebServer.Http.Helpers
             if (pos == -1)
                 return string.Empty;
 
-            return url.Substring(pos).Replace("?", "");
+            return url[pos..].Replace("?", "");
         }
 
         public static HttpMethod GetMethod(string httpData)
@@ -52,7 +52,7 @@ namespace WebServer.Http.Helpers
             if (httpData.Length == 0)
                 throw new HttpParseException($"{nameof(httpData)} must not be empty");
 
-            Regex methodRegex = new Regex(@"^\w+", RegexOptions.IgnoreCase);
+            Regex methodRegex = new(@"^\w+", RegexOptions.IgnoreCase);
             string methodName = methodRegex.Match(httpData).Value
                 .ToLower();
 
@@ -77,7 +77,7 @@ namespace WebServer.Http.Helpers
             if (httpData.Length == 0)
                 throw new HttpParseException($"{nameof(httpData)} must not be empty");
 
-            Regex headerRegex = new Regex(@".+:.+");
+            Regex headerRegex = new(@".+:.+");
 
             MatchCollection headerMatches = headerRegex.Matches(httpData);
 
@@ -85,10 +85,10 @@ namespace WebServer.Http.Helpers
 
             foreach (Match match in headerMatches)
             {
-                Regex headerNameRegex = new Regex(@"^.+(?=:)");
+                Regex headerNameRegex = new(@"^.+(?=:)");
                 string headerName = headerNameRegex.Match(match.Value).Value.ToLower();
 
-                Regex headerValueRegex = new Regex(@"(?<=: *)[^\s].+");
+                Regex headerValueRegex = new(@"(?<=: *)[^\s].+");
                 string headerValue = headerValueRegex.Match(match.Value).Value;
 
                 if (headerName == string.Empty || headerValue == string.Empty)
@@ -158,7 +158,7 @@ namespace WebServer.Http.Helpers
 
         private static string GetUrl(string httpData)
         {
-            Regex pathRegex = new Regex(@"(?<=^\w+\s).+(?= )", RegexOptions.IgnoreCase);
+            Regex pathRegex = new(@"(?<=^\w+\s).+(?= )", RegexOptions.IgnoreCase);
 
             string url = pathRegex.Match(httpData).Value
                 .ToLower();

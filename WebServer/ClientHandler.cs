@@ -29,7 +29,6 @@ namespace WebServer
 
         public void Handle(ITcpClient client)
         {
-            List<Exception> errors = new();
             NetworkStream stream = null;
             try
             {
@@ -75,7 +74,7 @@ namespace WebServer
         {
             int headDataLength = GetEndOfHeaderPosition(data);
 
-            string headData = Encoding.ASCII.GetString(data, 0, headDataLength);
+            string headData = Encoding.UTF8.GetString(data, 0, headDataLength);
 
             byte[] body = data
                 .Skip(headDataLength)

@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net.Sockets;
 using WebServer.Interfaces;
 
 namespace WebServer
 {
     public class TcpClientAdapter : ITcpClient
     {
-        private TcpClient _tcpClient;
+        private readonly TcpClient _tcpClient;
 
         public TcpClientAdapter(TcpClient tcpClient)
         {

@@ -12,9 +12,9 @@ namespace WebServer.Http.Helpers
     {
         public static byte[] BuildResponseMessage(this IHttpResponse response)
         {
-            StringBuilder responseBuilder = new StringBuilder($"HTTP/{response.HttpVersion} ");
+            StringBuilder responseBuilder = new($"HTTP/{response.HttpVersion} ");
 
-            responseBuilder.Append($"{response.StatusCode} \n");
+            responseBuilder.Append($"{(int)response.StatusCode} \n");
 
             return CreateResponse(response, responseBuilder);
         }
@@ -35,7 +35,7 @@ namespace WebServer.Http.Helpers
 
         private static byte[] CreateHeader(IHttpResponse response, StringBuilder responseBuilder)
         {
-            if (response.Cookie != null && response.Cookie.Count() != 0)
+            if (response.Cookie != null && response.Cookie.Any())
             {
                 responseBuilder.Append($"Set-Cookie: {response.Cookie.ConvertToString()}\n");
             }
@@ -50,7 +50,7 @@ namespace WebServer.Http.Helpers
                 responseBuilder.Append($"{header.Key}: {header.Value}\n");
             }
 
-            responseBuilder.Append($"\n");
+            responseBuilder.Append('\n');
 
             return Encoding.ASCII.GetBytes(responseBuilder.ToString());
         }

@@ -10,7 +10,7 @@ namespace WebServer
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             DIContainer.ConfigureServices(ConfigureServices);
 
@@ -27,15 +27,15 @@ namespace WebServer
 
             identifier.IdentifyUser(context);
 
-            context.Response.StatusCode = Enums.StatusCode.NotFound;
+            context.Response.StatusCode = Enums.StatusCode.InternalServerError;
+            context.Response.ContentType = null;
 
-            context.Response.Body = Encoding.ASCII.GetBytes($"<h1>Welcome to my server. {identifier.CurrentUserId}</h1>");
+            context.Response.Body = Encoding.ASCII.GetBytes($"");
         }
 
         private static void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IServerCollection, ServerCollection>();
-
             services.AddServer(sectionName: "Server_1");
             services.AddServer(sectionName: "Server_2");
 
