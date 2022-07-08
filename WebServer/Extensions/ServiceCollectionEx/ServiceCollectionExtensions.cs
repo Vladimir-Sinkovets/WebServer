@@ -33,7 +33,7 @@ namespace WebServer.Extensions.ServiceCollectionEx
                     serverConfig.Name = section["name"];
 
                     IOptions<WebServerConfiguration> opt = Options.Create(serverConfig);
-                    return new WebServer(opt);
+                    return new WebServer(opt, DIContainer.GetService<IClientHandler>());
                 });
         }
 

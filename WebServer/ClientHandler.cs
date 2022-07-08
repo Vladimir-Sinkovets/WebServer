@@ -29,7 +29,6 @@ namespace WebServer
 
         public void Handle(ITcpClient client)
         {
-            List<Exception> errors = new();
             NetworkStream stream = null;
             try
             {
