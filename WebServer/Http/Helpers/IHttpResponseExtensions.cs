@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using WebServer.Enums;
 using WebServer.Http.Interfaces;
 
 namespace WebServer.Http.Helpers
@@ -12,15 +8,10 @@ namespace WebServer.Http.Helpers
     {
         public static byte[] BuildResponseMessage(this IHttpResponse response)
         {
-            StringBuilder responseBuilder = new StringBuilder($"HTTP/{response.HttpVersion} ");
+            StringBuilder responseBuilder = new StringBuilder();
 
-            responseBuilder.Append($"{response.StatusCode} \n");
+            responseBuilder.Append($"HTTP/{response.HttpVersion} {response.StatusCode} \n");
 
-            return CreateResponse(response, responseBuilder);
-        }
-
-        private static byte[] CreateResponse(IHttpResponse response, StringBuilder responseBuilder)
-        {
             byte[] header = CreateHeader(response, responseBuilder);
 
             if (response.Body != null)
@@ -47,7 +38,8 @@ namespace WebServer.Http.Helpers
 
             foreach (var header in response.Headers)
             {
-                responseBuilder.Append($"{header.Key}: {header.Value}\n");
+                if(header.Value != null)
+                    responseBuilder.Append($"{header.Key}: {header.Value}\n");
             }
 
             responseBuilder.Append($"\n");

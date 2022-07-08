@@ -32,7 +32,6 @@ namespace WebServer.Http.Models
             Headers = new Dictionary<string, string>();
             HttpVersion = "1.1";
             StatusCode = StatusCode.OK;
-            ContentType = "text/html";
             Connection = "Closed";
         }
 

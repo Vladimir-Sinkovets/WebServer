@@ -2,7 +2,7 @@
 using System;
 using System.Text;
 using WebServer;
-using WebServer.Extensions.ServiceCollection;
+using WebServer.Extensions.ServiceCollectionEx;
 using WebServer.Http.Interfaces;
 using WebServer.Interfaces;
 using WebServer.Services;
@@ -26,9 +26,8 @@ namespace WebApplication
         {
             DIContainer.ConfigureServices(services =>
             {
-                services.AddSingleton<IServerCollection, ServerCollection>();
+                services.AddServers(new string[] { "server", });
                 services.AddScoped<ICookieIdentifier, CookieIdentifier>();
-                services.AddServer(sectionName: "server");
             });
 
             IServer server = DIContainer.GetService<IServerCollection>()

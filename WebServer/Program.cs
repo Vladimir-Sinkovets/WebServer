@@ -1,10 +1,17 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using System;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using WebServer.Http.Interfaces;
 using WebServer.Interfaces;
+using WebServer.OptionsModels;
 using WebServer.Services;
-using WebServer.Extensions.ServiceCollection;
-using WebServer.Extensions.ServerCollection;
+using WebServer.Extensions.ServerCollectionEx;
+using WebServer.Extensions.ServiceCollectionEx;
 
 namespace WebServer
 {
@@ -12,12 +19,7 @@ namespace WebServer
     {
         static void Main(string[] args)
         {
-            DIContainer.ConfigureServices(ConfigureServices);
-
-            IServer server = DIContainer.GetService<IServerCollection>()
-                .GetServerByName("server_2");
-
-            server.SetHandler(Handle);
+            IServer server = ConfigureServer();
             server.Run();
         }
 
@@ -27,19 +29,25 @@ namespace WebServer
 
             identifier.IdentifyUser(context);
 
-            context.Response.StatusCode = Enums.StatusCode.NotFound;
-
-            context.Response.Body = Encoding.ASCII.GetBytes($"<h1>Welcome to my server. {identifier.CurrentUserId}</h1>");
+            context.Response.ContentType = "text/html";
+            context.Response.Body = Encoding.ASCII.GetBytes($"{identifier.CurrentUserId}");
         }
 
-        private static void ConfigureServices(IServiceCollection services)
+
+        private static IServer ConfigureServer()
         {
-            services.AddSingleton<IServerCollection, ServerCollection>();
+            DIContainer.ConfigureServices(services =>
+            {
+                services.AddServers(new string[] { "Server_1", });
+                services.AddScoped<ICookieIdentifier, CookieIdentifier>();
+            });
 
-            services.AddServer(sectionName: "Server_1");
-            services.AddServer(sectionName: "Server_2");
+            IServer server = DIContainer.GetService<IServerCollection>()
+                .GetServer(name: "server_1");
 
-            services.AddScoped<ICookieIdentifier, CookieIdentifier>();
+            server.SetHandler(Handle);
+
+            return server;
         }
     }
 }

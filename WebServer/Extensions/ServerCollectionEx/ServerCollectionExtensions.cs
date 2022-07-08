@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebServer.Interfaces;
 
-namespace WebServer.Extensions.ServerCollection
+namespace WebServer.Extensions.ServerCollectionEx
 {
     public static class ServerCollectionExtensions
     {
