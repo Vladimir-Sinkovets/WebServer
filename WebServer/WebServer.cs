@@ -24,7 +24,7 @@ namespace WebServer
 
         public string Name { get; set; }
 
-        public WebServer(IOptions<WebServerConfiguration> options)
+        public WebServer(IOptions<WebServerConfiguration> options, IClientHandler clientHandler)
         {
             _options = options.Value;
 

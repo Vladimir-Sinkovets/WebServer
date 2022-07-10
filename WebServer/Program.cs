@@ -1,10 +1,17 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using System;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using WebServer.Http.Interfaces;
 using WebServer.Interfaces;
+using WebServer.OptionsModels;
 using WebServer.Services;
-using WebServer.Extensions.ServiceCollection;
-using WebServer.Extensions.ServerCollection;
+using WebServer.Extensions.ServerCollectionEx;
+using WebServer.Extensions.ServiceCollectionEx;
 
 namespace WebServer
 {
@@ -12,12 +19,7 @@ namespace WebServer
     {
         static void Main()
         {
-            DIContainer.ConfigureServices(ConfigureServices);
-
-            IServer server = DIContainer.GetService<IServerCollection>()
-                .GetServerByName("server_2");
-
-            server.SetHandler(Handle);
+            IServer server = ConfigureServer();
             server.Run();
         }
 
@@ -39,7 +41,7 @@ namespace WebServer
             services.AddServer(sectionName: "Server_1");
             services.AddServer(sectionName: "Server_2");
 
-            services.AddScoped<ICookieIdentifier, CookieIdentifier>();
+            return server;
         }
     }
 }

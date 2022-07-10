@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using WebServer.Interfaces;
 using WebServer.OptionsModels;
 
-namespace WebServer.Extensions.ServiceCollection
+namespace WebServer.Extensions.ServiceCollectionEx
 {
     public static class ServiceCollectionExtensions
     {
@@ -33,8 +33,20 @@ namespace WebServer.Extensions.ServiceCollection
                     serverConfig.Name = section["name"];
 
                     IOptions<WebServerConfiguration> opt = Options.Create(serverConfig);
-                    return new WebServer(opt);
+                    return new WebServer(opt, DIContainer.GetService<IClientHandler>());
                 });
+        }
+
+        public static IServiceCollection AddServers(this IServiceCollection services, params string[] serverSections)
+        {
+            services.AddSingleton<IServerCollection, ServerCollection>();
+
+            foreach (var section in serverSections)
+            {
+                services.AddServer(section);
+            }
+
+            return services;
         }
     }
 }
