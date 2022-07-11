@@ -32,7 +32,7 @@ namespace WebServer
 
             _listener = new TcpListenerAdapter(new TcpListener(IPAddress.Parse(_options.IpAddress), _options.Port));
 
-            _clientHandler = new ClientHandler(DIContainer.Provider);
+            _clientHandler = clientHandler;
 
             _threadPool = new MyThreadPool(_options.ThreadsCount);
         }

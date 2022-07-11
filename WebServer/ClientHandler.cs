@@ -11,7 +11,7 @@ using WebServer.Http.Exceptions;
 
 namespace WebServer
 {
-    internal class ClientHandler : IClientHandler
+    public class ClientHandler : IClientHandler
     {
         private readonly IServiceProvider _serviceProvider;
 

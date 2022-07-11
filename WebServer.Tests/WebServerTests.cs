@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +41,9 @@ namespace WebServer.Tests
 
             IOptions<WebServerConfiguration> option = Options.Create(config);
 
-            IServer server = new WebServer(option);
+            IServiceProvider provider = new ServiceCollection().BuildServiceProvider();
+
+            IServer server = new WebServer(option, new ClientHandler(provider));
             server.SetHandler(c => { });
 
             server.Run();
@@ -51,7 +54,7 @@ namespace WebServer.Tests
             server.Stop();
 
             // Assert
-            message.ToLower().Should().Contain("http/1.1 200 ok");
+            message.ToLower().Should().Contain("ok");
         }
 
         [Fact]
@@ -73,7 +76,9 @@ namespace WebServer.Tests
 
             IOptions<WebServerConfiguration> options = Options.Create(config);
 
-            IServer server = new WebServer(options);
+            IServiceProvider provider = new ServiceCollection().BuildServiceProvider();
+
+            IServer server = new WebServer(options, new ClientHandler(provider));
             server.SetHandler(context =>
             {
                 context.Response.Body = Encoding.UTF8.GetBytes("Hello world!");
@@ -88,7 +93,7 @@ namespace WebServer.Tests
             server.Stop();
 
             // Assert
-            message.ToLower().Should().Contain("http/1.1 200 ok");
+            message.ToLower().Should().Contain("ok");
             message.ToLower().Should().Contain("hello world!");
         }
 
@@ -111,7 +116,9 @@ namespace WebServer.Tests
 
             IOptions<WebServerConfiguration> options = Options.Create(config);
 
-            IServer server = new WebServer(options);
+            IServiceProvider provider = new ServiceCollection().BuildServiceProvider();
+            
+            IServer server = new WebServer(options, new ClientHandler(provider));
             server.SetHandler(context => { });
 
 
@@ -124,7 +131,7 @@ namespace WebServer.Tests
             server.Stop();
 
             // Assert
-            message.ToLower().Should().Contain("http/1.1 400 bad request");
+            message.ToLower().Should().Contain("bad request");
         }
 
         [Fact]
@@ -146,7 +153,9 @@ namespace WebServer.Tests
 
             IOptions<WebServerConfiguration> options = Options.Create(config);
 
-            IServer server = new WebServer(options);
+            IServiceProvider provider = new ServiceCollection().BuildServiceProvider();
+
+            IServer server = new WebServer(options, new ClientHandler(provider));
             server.SetHandler(context =>
             {
                 throw new Exception("test exception");
@@ -165,78 +174,6 @@ namespace WebServer.Tests
 
         }
 
-        //[Fact]
-        public void Should_HandleClientsWithMultiThreading()
-        {
-            int clientsCount = 10;
-            // Arrange
-            string ip = "127.0.0.2";
-            int port = 8887;
-            string request = "GeT 127.0.0.2:8887/index HTTP/1.1\n\r" +
-                "Cookie: id=a3fWa\r\n\r\n";
-
-            WebServerConfiguration config = new WebServerConfiguration()
-            {
-                IpAddress = ip,
-                Port = port,
-                ThreadsCount = 5,
-                Name = "server,"
-            };
-
-            IOptions<WebServerConfiguration> options = Options.Create(config);
-
-            IServer server = new WebServer(options);
-            server.SetHandler(context =>
-            {
-                Thread.Sleep(100);
-            });
-
-            // Act
-            server.Run();
-
-            IList<string> responses = new List<string>();
-            for (int i = 0; i < clientsCount; i++)
-            {
-                TcpClient client = new TcpClient();
-                
-                Parameters state = new Parameters()
-                { 
-                    Port = port,
-                    Ip = ip,
-                    Request = request,
-                };
-                
-                Thread thread = new Thread(state => 
-                {
-                    Parameters parameters = (Parameters)state;
-
-                    byte[] bytes = GetResponseByServer(parameters.Ip, parameters.Port, parameters.Request);
-                    string message = Encoding.UTF8.GetString(bytes);
-
-                    lock (this)
-                    {
-                        responses.Add(message);
-                    }
-
-                });
-                thread.Start(state);
-            }
-            Thread.Sleep(400);
-            server.Stop();
-
-            // Assert
-
-            responses.Count.Should().Be(clientsCount);
-        }
-        private class Parameters
-        {
-            public int Port{ get; set; }
-            public string Ip { get; set; }
-            public string Request { get; set; }
-            public TcpClient Client { get; set; }
-        }
-
-
         private byte[] GetResponseByServer(string ip, int port, string request)
         {
             TcpClient tcpClient = new TcpClient();
@@ -253,23 +190,6 @@ namespace WebServer.Tests
             byte[] response = data2[..bytes];
 
             tcpClient.Close();
-
-            return response;
-        }
-
-        private byte[] GetResponseByServer(string ip, int port, string request, TcpClient tcpClient)
-        {
-            tcpClient.Connect(ip, port);
-
-            NetworkStream stream = tcpClient.GetStream();
-            byte[] data = System.Text.Encoding.UTF8.GetBytes(request);
-
-            stream.Write(data, 0, data.Length);
-
-            byte[] data2 = new byte[tcpClient.ReceiveBufferSize];
-            int bytes = stream.Read(data2, 0, data2.Length);
-
-            byte[] response = data2[..bytes];
 
             return response;
         }
