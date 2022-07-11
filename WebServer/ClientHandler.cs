@@ -3,13 +3,10 @@ using System;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
-using WebServer.Http;
 using WebServer.Http.Interfaces;
-using WebServer.Services;
 using WebServer.Http.Helpers;
 using WebServer.Interfaces;
 using WebServer.Http.Models;
-using System.Collections.Generic;
 using WebServer.Http.Exceptions;
 
 namespace WebServer

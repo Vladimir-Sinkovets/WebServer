@@ -29,18 +29,24 @@ namespace WebServer
 
             identifier.IdentifyUser(context);
 
-            context.Response.StatusCode = Enums.StatusCode.InternalServerError;
+            context.Response.StatusCode = Enums.StatusCode.OK;
             context.Response.ContentType = null;
 
-            context.Response.Body = Encoding.ASCII.GetBytes($"");
+            context.Response.Body = Encoding.ASCII.GetBytes($"Hello world!");
         }
 
-        private static void ConfigureServices(IServiceCollection services)
+        private static IServer ConfigureServer()
         {
-            services.AddSingleton<IServerCollection, ServerCollection>();
-            services.AddServer(sectionName: "Server_1");
-            services.AddServer(sectionName: "Server_2");
+            DIContainer.ConfigureServices(services =>
+            {
+                services.AddSingleton<IServerCollection, ServerCollection>();
+                services.AddServers(new string[] { "Server_1", });
+                services.AddScoped<ICookieIdentifier, CookieIdentifier>();
+            });
 
+            IServer server = DIContainer.GetService<IServerCollection>()
+                .GetServer(name: "server_1");
+            server.SetHandler(Handle);
             return server;
         }
     }
