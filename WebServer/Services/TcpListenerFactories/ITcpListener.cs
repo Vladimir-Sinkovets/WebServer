@@ -1,10 +1,10 @@
 ﻿using System.Net.Sockets;
 
-namespace WebServer.Tcp
+namespace WebServer.Services.TcpListenerFactories
 {
     public interface ITcpListener
     {
-        TcpClient AcceptTcpClient();
+        ITcpClient AcceptTcpClient();
         void Start();
         void Stop();
     }

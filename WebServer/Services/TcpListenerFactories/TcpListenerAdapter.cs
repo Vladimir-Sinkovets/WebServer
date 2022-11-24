@@ -1,6 +1,6 @@
 ﻿using System.Net.Sockets;
 
-namespace WebServer.Tcp
+namespace WebServer.Services.TcpListenerFactories
 {
     public class TcpListenerAdapter : ITcpListener
     {
@@ -11,7 +11,7 @@ namespace WebServer.Tcp
             _listener = listener;
         }
 
-        public TcpClient AcceptTcpClient() => _listener.AcceptTcpClient();
+        public ITcpClient AcceptTcpClient() => new TcpClientAdapter(_listener.AcceptTcpClient());
 
         public void Start() => _listener.Start();
 

@@ -10,7 +10,7 @@ namespace WebServer.Services.ThreadPools
         private readonly string _name;
         private readonly Thread[] _threads;
         private readonly Queue<(Action<object> Work, object Parameter)> _works = new();
-        private volatile bool _isWorking = true;
+        private volatile bool _isWorking = true; // ?
 
 
         private readonly AutoResetEvent _workingEvent = new(false);
@@ -22,7 +22,7 @@ namespace WebServer.Services.ThreadPools
 
         public int MaxThreadsCount { get => _threads.Length; }
 
-        public MyThreadPool(int maxThreadsCount, ThreadPriority prioroty = ThreadPriority.Normal, string name = null)
+        public MyThreadPool(int maxThreadsCount, ThreadPriority prioroty = ThreadPriority.Normal, string name = null) // добавить IOption<>
         {
             if (maxThreadsCount <= 0)
                 throw new ArgumentOutOfRangeException(nameof(maxThreadsCount), maxThreadsCount, "Число потоков в пуле должно быть больше, либо равно 1");

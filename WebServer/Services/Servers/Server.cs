@@ -1,14 +1,11 @@
 ﻿using Microsoft.Extensions.Options;
 using System;
 using System.Net;
-using System.Net.Sockets;
 using System.Threading;
-using WebServer.Http.Interfaces;
-using WebServer.Services.Servers;
 using WebServer.OptionsModels;
-using WebServer.Services.ClientHandlers;
 using WebServer.Services.ThreadPools;
-using WebServer.Tcp;
+using WebServer.Services.ClientHandlers;
+using WebServer.Services.TcpListenerFactories;
 
 namespace WebServer.Services.Servers
 {
@@ -23,25 +20,27 @@ namespace WebServer.Services.Servers
 
         private bool _isRunning = false;
 
-        public string Name { get; set; }
+        public string Name { get; }
 
-        public Server(IOptions<WebServerConfiguration> options, IClientHandler clientHandler)
+        public Server(IOptions<WebServerConfiguration> options, IClientHandler clientHandler,
+            IThreadPool threadPool, ITcpListenerFactory tcpListener)
         {
             _options = options.Value;
 
             Name = _options.Name;
 
-            _listener = new TcpListenerAdapter(new TcpListener(IPAddress.Parse(_options.IpAddress), _options.Port)); // в фабрику
+            _listener = tcpListener.GetInstance(IPAddress.Parse(_options.IpAddress), _options.Port);
 
             _clientHandler = clientHandler;
 
-            _threadPool = new MyThreadPool(_options.ThreadsCount); // в фабрику 
+            _threadPool = threadPool;
         }
 
         public void Run()
         {
-            if (_clientHandler.RequestHandler == null)
-                throw new Exception($"Method \"{nameof(SetHandler)}\" must be called before \"{nameof(Run)}\" method"); // rewrite
+            // rewrite : 
+            //if (_clientHandler.RequestHandler == null)
+            //    throw new Exception($"Method \"{nameof(SetHandler)}\" must be called before \"{nameof(Run)}\" method"); // rewrite
 
             _isRunning = true;
 
@@ -60,11 +59,6 @@ namespace WebServer.Services.Servers
             Console.WriteLine("Server has stopped");
         }
 
-        public void SetHandler(Action<IHttpContext> action)
-        {
-            _clientHandler.RequestHandler = action;
-        }
-
 
         private void ListenClients()
         {
@@ -76,20 +70,20 @@ namespace WebServer.Services.Servers
                 {
                     Console.WriteLine("Waiting for connection...");
 
-                    TcpClient client = _listener.AcceptTcpClient();
+                    ITcpClient client = _listener.AcceptTcpClient();
 
                     Console.WriteLine("Connected!");
 
                     _threadPool.Execute(HandleClient, client);
                 }
             }
-            catch (ThreadInterruptedException ex)
+            catch (ThreadInterruptedException)
             {
-
+                // add logger mb
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
+                // add logger mb
             }
             finally
             {
@@ -99,9 +93,9 @@ namespace WebServer.Services.Servers
 
         private void HandleClient(object state)
         {
-            TcpClient client = (TcpClient)state;
+            ITcpClient client = (ITcpClient)state;
 
-            _clientHandler.Handle(new TcpClientAdapter(client));
+            _clientHandler.Handle(client);
         }
     }
 }
