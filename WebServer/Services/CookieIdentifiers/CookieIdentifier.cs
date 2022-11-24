@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebServer.Http.Interfaces;
 
-namespace WebServer.Services
+namespace WebServer.Services.CookieIdentifiers
 {
     public class CookieIdentifier : ICookieIdentifier
     {

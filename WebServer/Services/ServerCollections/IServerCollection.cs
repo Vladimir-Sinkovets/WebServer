@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using WebServer.Services.Servers;
 
-namespace WebServer.Interfaces
+namespace WebServer.Services.ServerCollections
 {
     public interface IServerCollection : IEnumerable<IServer>
     {

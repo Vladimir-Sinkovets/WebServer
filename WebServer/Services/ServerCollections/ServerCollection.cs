@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WebServer.Interfaces;
+using WebServer.Services.Servers;
 
-namespace WebServer
+namespace WebServer.Services.ServerCollections
 {
     public class ServerCollection : IServerCollection
     {

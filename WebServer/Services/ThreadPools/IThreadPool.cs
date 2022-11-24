@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WebServer.ThreadPools
+namespace WebServer.Services.ThreadPools
 {
     internal interface IThreadPool : IDisposable
     {

@@ -11,8 +11,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using WebServer.Interfaces;
 using WebServer.OptionsModels;
+using WebServer.Services.Servers;
 using Xunit;
 
 namespace WebServer.Tests

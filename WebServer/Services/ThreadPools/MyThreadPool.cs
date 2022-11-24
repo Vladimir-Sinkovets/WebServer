@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using WebServer.ThreadPools;
 
-namespace WebServer.MyThreadPools
+namespace WebServer.Services.ThreadPools
 {
     internal class MyThreadPool : IThreadPool
     {
@@ -83,7 +82,7 @@ namespace WebServer.MyThreadPools
                         break;
 
                     _queueEvent.WaitOne();
-                    
+
                     WaitWhile(_works.Count == 0);
 
                     var (work, parameter) = _works.Dequeue();

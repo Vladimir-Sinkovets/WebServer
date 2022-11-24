@@ -5,11 +5,11 @@ using System.Net.Sockets;
 using System.Text;
 using WebServer.Http.Interfaces;
 using WebServer.Http.Helpers;
-using WebServer.Interfaces;
 using WebServer.Http.Models;
 using WebServer.Http.Exceptions;
+using WebServer.Tcp;
 
-namespace WebServer
+namespace WebServer.Services.ClientHandlers
 {
     public class ClientHandler : IClientHandler
     {
@@ -30,13 +30,13 @@ namespace WebServer
             try
             {
                 stream = client.GetStream();
-            
+
                 while (client.Connected == true)
                 {
                     using IServiceScope scope = _serviceProvider.CreateScope();
 
                     byte[] data = ReadRequest(client, stream);
-                    
+
                     IHttpContext context = CreateHttpContext(data, scope);
 
                     RequestHandler.Invoke(context);
@@ -55,7 +55,7 @@ namespace WebServer
             {
                 Console.WriteLine("Ошибка : " + ex.ToString());
 
-                if(client.Connected == true)
+                if (client.Connected == true)
                 {
                     stream.Write(Encoding.ASCII.GetBytes("HTTP/1.1 500 Internal Server Error"));
                 }

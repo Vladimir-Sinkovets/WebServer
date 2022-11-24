@@ -6,8 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WebServer.Interfaces;
 using WebServer.OptionsModels;
+using WebServer.Services.ClientHandlers;
+using WebServer.Services.ServerCollections;
+using WebServer.Services.Servers;
 
 namespace WebServer.Extensions.ServiceCollectionEx
 {
@@ -16,7 +18,7 @@ namespace WebServer.Extensions.ServiceCollectionEx
         public static IServiceCollection AddServer(this IServiceCollection services, string sectionName)
         {
             return services
-                .AddSingleton<IServer, WebServer>(sp =>
+                .AddSingleton<IServer, Server>(sp =>
                 {
                     WebServerConfiguration serverConfig = new WebServerConfiguration();
 
@@ -33,7 +35,7 @@ namespace WebServer.Extensions.ServiceCollectionEx
                     serverConfig.Name = section["name"];
 
                     IOptions<WebServerConfiguration> opt = Options.Create(serverConfig);
-                    return new WebServer(opt, DIContainer.GetService<IClientHandler>());
+                    return new Server(opt, DIContainer.GetService<IClientHandler>()); // remove DIContainer using
                 });
         }
 

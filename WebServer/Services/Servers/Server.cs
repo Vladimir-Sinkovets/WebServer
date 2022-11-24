@@ -4,14 +4,15 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using WebServer.Http.Interfaces;
-using WebServer.Interfaces;
-using WebServer.MyThreadPools;
+using WebServer.Services.Servers;
 using WebServer.OptionsModels;
-using WebServer.ThreadPools;
+using WebServer.Services.ClientHandlers;
+using WebServer.Services.ThreadPools;
+using WebServer.Tcp;
 
-namespace WebServer
+namespace WebServer.Services.Servers
 {
-    public class WebServer : IServer
+    public class Server : IServer
     {
         private Thread _mainThread;
         private readonly ITcpListener _listener;
@@ -24,23 +25,23 @@ namespace WebServer
 
         public string Name { get; set; }
 
-        public WebServer(IOptions<WebServerConfiguration> options, IClientHandler clientHandler)
+        public Server(IOptions<WebServerConfiguration> options, IClientHandler clientHandler)
         {
             _options = options.Value;
 
             Name = _options.Name;
 
-            _listener = new TcpListenerAdapter(new TcpListener(IPAddress.Parse(_options.IpAddress), _options.Port));
+            _listener = new TcpListenerAdapter(new TcpListener(IPAddress.Parse(_options.IpAddress), _options.Port)); // в фабрику
 
             _clientHandler = clientHandler;
 
-            _threadPool = new MyThreadPool(_options.ThreadsCount);
+            _threadPool = new MyThreadPool(_options.ThreadsCount); // в фабрику 
         }
 
         public void Run()
         {
             if (_clientHandler.RequestHandler == null)
-                throw new Exception($"Method \"{nameof(SetHandler)}\" must be called before \"{nameof(Run)}\" method");
+                throw new Exception($"Method \"{nameof(SetHandler)}\" must be called before \"{nameof(Run)}\" method"); // rewrite
 
             _isRunning = true;
 
