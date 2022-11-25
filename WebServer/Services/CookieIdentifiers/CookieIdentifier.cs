@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebServer.Http.Interfaces;
+using WebServer.Services.Http.Model;
 
 namespace WebServer.Services.CookieIdentifiers
 {
@@ -12,7 +13,7 @@ namespace WebServer.Services.CookieIdentifiers
         private const string CookieHeaderName = "id";
         public Guid CurrentUserId { get; private set; }
 
-        public Guid IdentifyUser(IHttpContext context)
+        public Guid IdentifyUser(HttpContext context)
         {
             bool result = context.Request.Cookie.TryGetValue(CookieHeaderName, out string cookieId);
 

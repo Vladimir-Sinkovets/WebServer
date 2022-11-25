@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebServer.Enums
+namespace WebServer.Services.Http.Enums
 {
     public enum HttpMethod
     {

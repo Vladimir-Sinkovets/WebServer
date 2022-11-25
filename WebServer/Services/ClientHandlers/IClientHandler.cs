@@ -7,6 +7,6 @@ namespace WebServer.Services.ClientHandlers
     public interface IClientHandler
     {
         void Handle(ITcpClient client);
-        Action<IHttpContext> RequestHandler { get; set; }
+        // Action<IHttpContext> RequestHandler { get; set; }
     }
 }

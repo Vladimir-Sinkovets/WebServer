@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WebServer.Http.Interfaces;
+using WebServer.Services.Http.CookieCollections;
 
-namespace WebServer.Http.Helpers
+namespace WebServer.Services.Http.Helpers
 {
     internal static class IResponseCookieCollectionExtentions
     {
         public static string ConvertToString(this IResponseCookieCollection cookie)
         {
-            if (cookie.Count() == 0)
+            if (!cookie.Any())
             {
                 return string.Empty;
             }

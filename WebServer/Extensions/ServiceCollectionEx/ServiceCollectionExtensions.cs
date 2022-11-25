@@ -35,7 +35,7 @@ namespace WebServer.Extensions.ServiceCollectionEx
                     serverConfig.Name = section["name"];
 
                     IOptions<WebServerConfiguration> opt = Options.Create(serverConfig);
-                    return new Server(opt, DIContainer.GetService<IClientHandler>()); // remove DIContainer using
+                    return new Server(opt, null/*DIContainer.GetService<IClientHandler>()*/, null, null); // remove DIContainer using
                 });
         }
 

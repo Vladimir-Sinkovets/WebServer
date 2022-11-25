@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using WebServer.Enums;
-using WebServer.Http.Exceptions;
+using WebServer.Services.Http.Enums;
+using WebServer.Services.Http.Exceptions;
 
-namespace WebServer.Http.Helpers
+namespace WebServer.Services.Http.Helpers
 {
     internal static class HttpRequestParseHelper
     {
@@ -12,6 +12,7 @@ namespace WebServer.Http.Helpers
         {
             if (httpData == null)
                 throw new ArgumentNullException($"Parameter {nameof(httpData)} must not be null");
+
             if (httpData.Length == 0)
                 throw new HttpParseException($"{nameof(httpData)} must not be empty");
 
@@ -25,13 +26,14 @@ namespace WebServer.Http.Helpers
             if (pos == -1)
                 return url;
 
-            return url.Substring(0, pos);
+            return url[..pos];
         }
 
         public static string GetQueryString(string httpData)
         {
             if (httpData == null)
                 throw new ArgumentNullException($"Parameter {nameof(httpData)} must not be null");
+
             if (httpData.Length == 0)
                 throw new HttpParseException($"{nameof(httpData)} must not be empty");
 
@@ -74,6 +76,7 @@ namespace WebServer.Http.Helpers
         {
             if (httpData == null)
                 throw new ArgumentNullException($"Parameter {nameof(httpData)} must not be null");
+
             if (httpData.Length == 0)
                 throw new HttpParseException($"{nameof(httpData)} must not be empty");
 
@@ -104,6 +107,7 @@ namespace WebServer.Http.Helpers
         {
             if (httpData == null)
                 throw new ArgumentNullException($"Parameter {nameof(httpData)} must not be null");
+
             if (httpData.Length == 0)
                 throw new HttpParseException($"{nameof(httpData)} must not be empty");
 
@@ -120,7 +124,7 @@ namespace WebServer.Http.Helpers
             {
                 string[] pair = parameter.Split('=');
 
-                if(pair.Length != 2)
+                if (pair.Length != 2)
                     throw new HttpParseException("Wrong queries' structure");
                 if (queryParameters.ContainsKey(pair[0]) == true)
                     throw new HttpParseException("Query parameter with the same key already exists");

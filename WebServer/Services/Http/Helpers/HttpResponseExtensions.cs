@@ -1,14 +1,14 @@
 ﻿using System.Linq;
 using System.Text;
-using WebServer.Http.Interfaces;
+using WebServer.Services.Http.Models;
 
-namespace WebServer.Http.Helpers
+namespace WebServer.Services.Http.Helpers
 {
-    internal static class IHttpResponseExtensions
+    internal static class HttpResponseExtensions
     {
-        public static byte[] BuildResponseMessage(this IHttpResponse response)
+        public static byte[] BuildResponseMessage(this HttpResponse response)
         {
-            StringBuilder responseBuilder = new StringBuilder();
+            StringBuilder responseBuilder = new();
 
             responseBuilder.Append($"HTTP/{response.HttpVersion} {response.StatusCode} \n");
 
@@ -24,7 +24,7 @@ namespace WebServer.Http.Helpers
             }
         }
 
-        private static byte[] CreateHeader(IHttpResponse response, StringBuilder responseBuilder)
+        private static byte[] CreateHeader(HttpResponse response, StringBuilder responseBuilder)
         {
             if (response.Cookie != null && response.Cookie.Any())
             {
@@ -38,7 +38,7 @@ namespace WebServer.Http.Helpers
 
             foreach (var header in response.Headers)
             {
-                if(header.Value != null)
+                if (header.Value != null)
                     responseBuilder.Append($"{header.Key}: {header.Value}\n");
             }
 

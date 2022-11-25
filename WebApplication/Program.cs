@@ -18,7 +18,7 @@ namespace WebApplication
             server.Run();
         }
 
-        private static void Handle(IHttpContext context)
+        private static void Handle(HttpContext context)
         {
             context.Response.Body = Encoding.UTF8.GetBytes("Hello");
         }

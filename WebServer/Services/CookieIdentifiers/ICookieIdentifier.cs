@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebServer.Http.Interfaces;
+using WebServer.Services.Http.Models;
 
 namespace WebServer.Services.CookieIdentifiers
 {
     public interface ICookieIdentifier
     {
         public Guid CurrentUserId { get; }
-        public Guid IdentifyUser(IHttpContext context);
+        public Guid IdentifyUser(HttpContext context);
     }
 }

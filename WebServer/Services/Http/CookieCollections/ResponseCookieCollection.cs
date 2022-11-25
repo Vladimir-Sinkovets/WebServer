@@ -1,9 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using WebServer.Http.Interfaces;
 
-namespace WebServer.Http.Models
+namespace WebServer.Services.Http.CookieCollections
 {
     public class ResponseCookieCollection : IResponseCookieCollection
     {

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using WebServer.Enums;
-using WebServer.Http.Interfaces;
+using WebServer.Services.Http.CookieCollections;
+using WebServer.Services.Http.Enums;
 
-namespace WebServer.Http.Models
+namespace WebServer.Services.Http.Models
 {
-    public class HttpResponse : IHttpResponse
+    public class HttpResponse
     {
         public byte[] Body { get; set; }
         public string Connection

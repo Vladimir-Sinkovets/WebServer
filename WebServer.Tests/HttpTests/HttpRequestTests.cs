@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using Xunit;
 using FluentAssertions;
 using WebServer.Http;
-using WebServer.Enums;
 using WebServer.Http.Interfaces;
-using WebServer.Http.Exceptions;
-using WebServer.Http.Models;
+using WebServer.Services.Http.Model;
+using WebServer.Services.Http.Exceptions;
+using WebServer.Services.Http.Enums;
 
 namespace WebServer.Tests.HttpTests
 {
@@ -42,7 +42,7 @@ namespace WebServer.Tests.HttpTests
             // Arrange
 
             // Act
-            IHttpRequest httpRequest = new HttpRequest(_httpRequestString, null);
+            HttpRequest httpRequest = new HttpRequest(_httpRequestString, null);
 
             // Assert
             httpRequest.Method.Should().Be(HttpMethod.GET);
@@ -53,7 +53,7 @@ namespace WebServer.Tests.HttpTests
             // Arrange
 
             // Act
-            IHttpRequest httpRequest = new HttpRequest(_httpRequestString, null);
+            HttpRequest httpRequest = new HttpRequest(_httpRequestString, null);
 
             // Assert
             httpRequest.Path.Should().Be("/favicon.ico");
@@ -64,7 +64,7 @@ namespace WebServer.Tests.HttpTests
             // Arrange
 
             // Act
-            IHttpRequest httpRequest = new HttpRequest(_httpRequestString, null);
+            HttpRequest httpRequest = new HttpRequest(_httpRequestString, null);
 
             // Assert
             httpRequest.Cookie.TryGetValue("id", out string id);
@@ -77,7 +77,7 @@ namespace WebServer.Tests.HttpTests
             // Arrange
 
             // Act
-            IHttpRequest httpRequest = new HttpRequest(_httpRequestString, null);
+            HttpRequest httpRequest = new HttpRequest(_httpRequestString, null);
 
             // Assert
             httpRequest.Headers["sec-fetch-site"].Should().Be("same-origin");
@@ -88,7 +88,7 @@ namespace WebServer.Tests.HttpTests
             // Arrange
 
             // Act
-            IHttpRequest httpRequest = new HttpRequest(_httpRequestString, null);
+            HttpRequest httpRequest = new HttpRequest(_httpRequestString, null);
 
             // Assert
             httpRequest.QueryString.Should().Be("id=10");
@@ -99,7 +99,7 @@ namespace WebServer.Tests.HttpTests
             // Arrange
 
             // Act
-            IHttpRequest httpRequest = new HttpRequest(_httpRequestString, null);
+            HttpRequest httpRequest = new HttpRequest(_httpRequestString, null);
 
             // Assert
             httpRequest.Query["id"].Should().Be("10");
@@ -116,7 +116,7 @@ namespace WebServer.Tests.HttpTests
                 "\n" +
                 "name1 = value1 & name2 = value2";
             // Act
-            IHttpRequest httpRequest = new HttpRequest(httpRequestString, null);
+            HttpRequest httpRequest = new HttpRequest(httpRequestString, null);
 
             // Assert
             httpRequest.ContentType.Should().Be("text");

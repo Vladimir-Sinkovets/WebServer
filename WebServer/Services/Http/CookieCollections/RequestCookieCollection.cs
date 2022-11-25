@@ -1,8 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using WebServer.Http.Interfaces;
 
-namespace WebServer.Http.Models
+namespace WebServer.Services.Http.CookieCollections
 {
     public class RequestCookieCollection : IRequestCookieCollection
     {
@@ -18,7 +17,7 @@ namespace WebServer.Http.Models
             _pairs = new Dictionary<string, string>();
         }
 
-        public bool ContainsKey(string key)
+        public bool ContainsHeader(string key)
         {
             return _pairs.ContainsKey(key);
         }

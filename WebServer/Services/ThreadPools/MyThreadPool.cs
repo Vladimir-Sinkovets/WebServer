@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.Options;
+using Microsoft.VisualBasic.FileIO;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -6,36 +8,42 @@ namespace WebServer.Services.ThreadPools
 {
     internal class MyThreadPool : IThreadPool
     {
-        private readonly ThreadPriority _prioroty;
-        private readonly string _name;
-        private readonly Thread[] _threads;
-        private readonly Queue<(Action<object> Work, object Parameter)> _works = new();
+        private ThreadPriority _prioroty;
+        private string _name;
+        private Thread[] _threads;
+        private Queue<(Action<object> Work, object Parameter)> _works = new();
         private volatile bool _isWorking = true; // ?
 
 
         private readonly AutoResetEvent _workingEvent = new(false);
         private readonly AutoResetEvent _queueEvent = new(true);
-
         private const int _disposeThreadJoinTimeout = 100;
+        private readonly IOptions<ThreadPoolOptions> _options;
+
 
         public string Name { get => _name; }
 
         public int MaxThreadsCount { get => _threads.Length; }
 
-        public MyThreadPool(int maxThreadsCount, ThreadPriority prioroty = ThreadPriority.Normal, string name = null) // добавить IOption<>
+        public MyThreadPool(IOptions<ThreadPoolOptions> options)
         {
+            _options = options;
+            var maxThreadsCount = _options.Value.ThreadPoolCount;
+            
             if (maxThreadsCount <= 0)
                 throw new ArgumentOutOfRangeException(nameof(maxThreadsCount), maxThreadsCount, "Число потоков в пуле должно быть больше, либо равно 1");
 
-            _prioroty = prioroty;
-            _threads = new Thread[maxThreadsCount];
-            _name = name ?? GetHashCode().ToString("x");
+            ThreadPriority prioroty = ThreadPriority.Normal;
 
-            InitializeThreadsArray();
+            _prioroty = prioroty;
+            _name = _options.Value.Name ?? GetHashCode().ToString("x");
+
+            InitializeThreadsArray(maxThreadsCount);
         }
 
-        private void InitializeThreadsArray()
+        private void InitializeThreadsArray(int maxThreadsCount)
         {
+            _threads = new Thread[maxThreadsCount];
             for (var i = 0; i < _threads.Length; i++)
             {
                 string name = $"{nameof(MyThreadPool)}[{Name}] - Thread[{i}]";

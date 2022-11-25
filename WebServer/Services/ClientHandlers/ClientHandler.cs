@@ -4,23 +4,26 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using WebServer.Http.Interfaces;
-using WebServer.Http.Helpers;
-using WebServer.Http.Models;
-using WebServer.Http.Exceptions;
 using WebServer.Services.TcpListenerFactories;
+using WebServer.Services.Http;
+using WebServer.Http.Helpers;
+using WebServer.Services.Http.Model;
+using WebServer.Services.Http.Exceptions;
 
 namespace WebServer.Services.ClientHandlers
 {
     public class ClientHandler : IClientHandler
     {
         private readonly IServiceProvider _serviceProvider;
+        private readonly IHttpContextFactory _httpContextFactory;
 
-        public Action<IHttpContext> RequestHandler { get; set; }
+        public Action<HttpContext> RequestHandler { get; set; }
 
 
-        public ClientHandler(IServiceProvider serviceProvider)
+        public ClientHandler(IServiceProvider serviceProvider, IHttpContextFactory httpContextFactory)
         {
             _serviceProvider = serviceProvider;
+            _httpContextFactory = httpContextFactory;
         }
 
 
@@ -37,7 +40,7 @@ namespace WebServer.Services.ClientHandlers
 
                     byte[] data = ReadRequest(client, stream);
 
-                    IHttpContext context = CreateHttpContext(data, scope);
+                    HttpContext context = _httpContextFactory.CreateInstance(data, scope.ServiceProvider);
 
                     RequestHandler.Invoke(context);
 
@@ -66,24 +69,7 @@ namespace WebServer.Services.ClientHandlers
             }
         }
 
-
-        private IHttpContext CreateHttpContext(byte[] data, IServiceScope scope)
-        {
-            int headDataLength = GetEndOfHeaderPosition(data);
-
-            string headData = Encoding.UTF8.GetString(data, 0, headDataLength);
-
-            byte[] body = data
-                .Skip(headDataLength)
-                .ToArray();
-
-            IHttpRequest request = new HttpRequest(headData, body);
-            IHttpResponse response = new HttpResponse();
-
-            return new HttpContext(request, response, scope.ServiceProvider);
-        }
-
-        private byte[] ReadRequest(ITcpClient client, NetworkStream stream)
+        private static byte[] ReadRequest(ITcpClient client, NetworkStream stream)
         {
             byte[] bytes = new byte[client.ReceiveBufferSize];
 
@@ -94,22 +80,8 @@ namespace WebServer.Services.ClientHandlers
                 .ToArray();
         }
 
-        private int GetEndOfHeaderPosition(byte[] bytes)
-        {
-            int i = 0;
 
-            while (!((char)bytes[i + 1] == '\r' &&
-                   (char)bytes[i + 2] == '\n' &&
-                   (char)bytes[i + 3] == '\r' &&
-                   (char)bytes[i + 4] == '\n'))
-            {
-                i++;
-            }
-
-            return i + 1;
-        }
-
-        private void SendRequest(NetworkStream stream, IHttpContext context)
+        private static void SendRequest(NetworkStream stream, HttpContext context)
         {
             stream.Write(context.Response.BuildResponseMessage());
         }

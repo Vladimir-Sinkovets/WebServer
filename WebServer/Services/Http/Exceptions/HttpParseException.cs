@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebServer.Http.Exceptions
+namespace WebServer.Services.Http.Exceptions
 {
     public class HttpParseException : HttpException
     {
