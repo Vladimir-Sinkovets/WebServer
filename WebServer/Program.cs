@@ -1,17 +1,13 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using System;
-using System.Net;
-using System.Net.Sockets;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System.Text;
-using System.Threading;
-using WebServer.Http.Interfaces;
-using WebServer.Interfaces;
-using WebServer.OptionsModels;
-using WebServer.Services;
-using WebServer.Extensions.ServerCollectionEx;
 using WebServer.Extensions.ServiceCollectionEx;
+using WebServer.Services.CookieIdentifiers;
+using WebServer.Services.ServerCollections;
+using WebServer.Services.Servers;
+using System.ComponentModel;
+using WebServer.Models.Enums;
+using WebServer.Models;
+using WebServer.IoC;
 
 namespace WebServer
 {
@@ -23,13 +19,13 @@ namespace WebServer
             server.Run();
         }
 
-        private static void Handle(IHttpContext context)
+        private static void Handle(HttpContext context)
         {
             ICookieIdentifier identifier = context.ServiceProvider.GetService<ICookieIdentifier>();
 
             identifier.IdentifyUser(context);
 
-            context.Response.StatusCode = Enums.StatusCode.OK;
+            context.Response.StatusCode = StatusCode.OK;
             context.Response.ContentType = null;
 
             context.Response.Body = Encoding.ASCII.GetBytes($"Hello world!");
@@ -37,16 +33,20 @@ namespace WebServer
 
         private static IServer ConfigureServer()
         {
-            DIContainer.ConfigureServices(services =>
+            var container = new DIContainer();
+
+            container.ConfigureServices(services =>
             {
                 services.AddSingleton<IServerCollection, ServerCollection>();
                 services.AddServers(new string[] { "Server_1", });
                 services.AddScoped<ICookieIdentifier, CookieIdentifier>();
             });
 
-            IServer server = DIContainer.GetService<IServerCollection>()
+            IServer server = container.GetService<IServerCollection>()
                 .GetServer(name: "server_1");
-            server.SetHandler(Handle);
+
+            //server.SetHandler(Handle);
+            
             return server;
         }
     }

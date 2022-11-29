@@ -11,8 +11,9 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using WebServer.Interfaces;
-using WebServer.OptionsModels;
+using WebServer.IoC;
+using WebServer.Services.Servers;
+using WebServer.Services.Servers.OptionsModels;
 using Xunit;
 
 namespace WebServer.Tests
@@ -31,7 +32,7 @@ namespace WebServer.Tests
             int port = 8887;
             string request = "GET 127.0.0.2:8887/index HTTP/1.1\n\r" +
                 "Cookie: id=a3fWa\r\n\r\n";
-            WebServerConfiguration config = new WebServerConfiguration()
+            ServerConfiguration config = new ServerConfiguration()
             {
                 IpAddress = "127.0.0.2",
                 Port = 8887,
@@ -39,7 +40,7 @@ namespace WebServer.Tests
                 Name = "server,"
             };
 
-            IOptions<WebServerConfiguration> option = Options.Create(config);
+            IOptions<ServerConfiguration> option = Options.Create(config);
 
             IServiceProvider provider = new ServiceCollection().BuildServiceProvider();
 
@@ -66,7 +67,7 @@ namespace WebServer.Tests
             string request = "GET 127.0.0.2:8887/index HTTP/1.1\n\r" +
                 "Cookie: id=a3fWa\r\n\r\n";
 
-            WebServerConfiguration config = new WebServerConfiguration()
+            ServerConfiguration config = new ServerConfiguration()
             {
                 IpAddress = ip,
                 Port = port,
@@ -74,7 +75,7 @@ namespace WebServer.Tests
                 Name = "server,"
             };
 
-            IOptions<WebServerConfiguration> options = Options.Create(config);
+            IOptions<ServerConfiguration> options = Options.Create(config);
 
             IServiceProvider provider = new ServiceCollection().BuildServiceProvider();
 
@@ -106,7 +107,7 @@ namespace WebServer.Tests
             string request = "GT 127.0.0.2:8887/index HTTP/1.1\n\r" +
                 "Cookie: id=a3fWa\r\n\r\n";
 
-            WebServerConfiguration config = new WebServerConfiguration()
+            ServerConfiguration config = new ServerConfiguration()
             {
                 IpAddress = ip,
                 Port = port,
@@ -114,7 +115,7 @@ namespace WebServer.Tests
                 Name = "server,"
             };
 
-            IOptions<WebServerConfiguration> options = Options.Create(config);
+            IOptions<ServerConfiguration> options = Options.Create(config);
 
             IServiceProvider provider = new ServiceCollection().BuildServiceProvider();
             
@@ -143,7 +144,7 @@ namespace WebServer.Tests
             string request = "GeT 127.0.0.2:8887/index HTTP/1.1\n\r" +
                 "Cookie: id=a3fWa\r\n\r\n";
 
-            WebServerConfiguration config = new WebServerConfiguration()
+            ServerConfiguration config = new ServerConfiguration()
             {
                 IpAddress = ip,
                 Port = port,
@@ -151,7 +152,7 @@ namespace WebServer.Tests
                 Name = "server,"
             };
 
-            IOptions<WebServerConfiguration> options = Options.Create(config);
+            IOptions<ServerConfiguration> options = Options.Create(config);
 
             IServiceProvider provider = new ServiceCollection().BuildServiceProvider();
 

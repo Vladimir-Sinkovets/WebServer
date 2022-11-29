@@ -6,8 +6,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WebServer.Interfaces;
-using WebServer.OptionsModels;
+using WebServer.Services.ClientHandlers;
+using WebServer.Services.ServerCollections;
+using WebServer.Services.Servers;
+using WebServer.Services.Servers.OptionsModels;
+using WebServer.Services.TcpListenerFactories;
+using WebServer.Services.ThreadPools;
 
 namespace WebServer.Extensions.ServiceCollectionEx
 {
@@ -16,9 +20,9 @@ namespace WebServer.Extensions.ServiceCollectionEx
         public static IServiceCollection AddServer(this IServiceCollection services, string sectionName)
         {
             return services
-                .AddSingleton<IServer, WebServer>(sp =>
+                .AddSingleton<IServer, Server>(sp =>
                 {
-                    WebServerConfiguration serverConfig = new WebServerConfiguration();
+                    ServerConfiguration serverConfig = new ServerConfiguration();
 
                     IConfiguration config = new ConfigurationBuilder()
                         .AddJsonFile("appsettings.json")
@@ -32,8 +36,13 @@ namespace WebServer.Extensions.ServiceCollectionEx
                     serverConfig.ThreadsCount = int.Parse(section["threadsCount"]);
                     serverConfig.Name = section["name"];
 
-                    IOptions<WebServerConfiguration> opt = Options.Create(serverConfig);
-                    return new WebServer(opt, DIContainer.GetService<IClientHandler>());
+                    IOptions<ServerConfiguration> opt = Options.Create(serverConfig);
+                    return new Server(
+                        opt,
+                        sp.GetService<IClientHandler>(),
+                        sp.GetService<IThreadPool>(),
+                        sp.GetService<ITcpListenerFactory>()
+                        );
                 });
         }
 
