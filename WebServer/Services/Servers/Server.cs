@@ -23,13 +23,13 @@ namespace WebServer.Services.Servers
         public string Name { get; }
 
         public Server(IOptions<ServerConfiguration> options, IClientHandler clientHandler,
-            IThreadPool threadPool, ITcpListenerFactory tcpListener)
+            IThreadPool threadPool, ITcpListenerFactory tcpListenerFactory)
         {
             _options = options.Value;
 
             Name = _options.Name;
 
-            _listener = tcpListener.GetInstance(IPAddress.Parse(_options.IpAddress), _options.Port);
+            _listener = tcpListenerFactory.GetInstance(IPAddress.Parse(_options.IpAddress), _options.Port);
 
             _clientHandler = clientHandler;
 
