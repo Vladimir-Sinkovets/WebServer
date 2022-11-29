@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace WebServer.Services.Http.CookieCollections
+namespace WebServer.Models.CookieCollections
 {
     public class RequestCookieCollection : IRequestCookieCollection
     {

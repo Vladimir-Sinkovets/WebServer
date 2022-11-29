@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebServer.Http.Interfaces;
-using WebServer.Services.Http.Model;
+using WebServer.Models;
 
 namespace WebServer.Services.CookieIdentifiers
 {

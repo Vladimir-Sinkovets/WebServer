@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WebServer.Services.Http.CookieCollections
+namespace WebServer.Models.CookieCollections
 {
     public interface IResponseCookieCollection : IEnumerable<KeyValuePair<string, string>>
     {

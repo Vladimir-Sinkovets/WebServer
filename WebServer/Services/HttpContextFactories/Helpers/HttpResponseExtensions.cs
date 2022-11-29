@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Text;
-using WebServer.Services.Http.Models;
+using WebServer.Models;
 
-namespace WebServer.Services.Http.Helpers
+namespace WebServer.Services.HttpContextFactories.Helpers
 {
     internal static class HttpResponseExtensions
     {

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using WebServer.Services.Http.CookieCollections;
-using WebServer.Services.Http.Enums;
+using WebServer.Models.CookieCollections;
+using WebServer.Models.Enums;
 
-namespace WebServer.Services.Http.Models
+namespace WebServer.Models
 {
     public class HttpRequest
     {

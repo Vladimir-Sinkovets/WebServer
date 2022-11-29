@@ -1,6 +1,4 @@
-﻿using System;
-using WebServer.Http.Interfaces;
-using WebServer.Services.TcpListenerFactories;
+﻿using WebServer.Services.TcpListenerFactories;
 
 namespace WebServer.Services.ClientHandlers
 {

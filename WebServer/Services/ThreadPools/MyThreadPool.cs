@@ -1,12 +1,11 @@
 ﻿using Microsoft.Extensions.Options;
-using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 
 namespace WebServer.Services.ThreadPools
 {
-    internal class MyThreadPool : IThreadPool
+    public class MyThreadPool : IThreadPool
     {
         private ThreadPriority _prioroty;
         private string _name;
@@ -18,17 +17,22 @@ namespace WebServer.Services.ThreadPools
         private readonly AutoResetEvent _workingEvent = new(false);
         private readonly AutoResetEvent _queueEvent = new(true);
         private const int _disposeThreadJoinTimeout = 100;
-        private readonly IOptions<ThreadPoolOptions> _options;
+        private readonly ThreadPoolOptions _options;
 
 
         public string Name { get => _name; }
 
         public int MaxThreadsCount { get => _threads.Length; }
 
-        public MyThreadPool(IOptions<ThreadPoolOptions> options)
+        public MyThreadPool(IOptions<ThreadPoolOptions> options = null)
         {
-            _options = options;
-            var maxThreadsCount = _options.Value.ThreadPoolCount;
+            if(options == null)
+                _options = new ThreadPoolOptions() { Name = "pool", ThreadPoolCount = 10 };
+            else
+                _options = options.Value;
+
+
+            var maxThreadsCount = _options.ThreadPoolCount;
             
             if (maxThreadsCount <= 0)
                 throw new ArgumentOutOfRangeException(nameof(maxThreadsCount), maxThreadsCount, "Число потоков в пуле должно быть больше, либо равно 1");
@@ -36,7 +40,7 @@ namespace WebServer.Services.ThreadPools
             ThreadPriority prioroty = ThreadPriority.Normal;
 
             _prioroty = prioroty;
-            _name = _options.Value.Name ?? GetHashCode().ToString("x");
+            _name = _options.Name ?? GetHashCode().ToString("x");
 
             InitializeThreadsArray(maxThreadsCount);
         }

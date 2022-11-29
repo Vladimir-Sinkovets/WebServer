@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using WebServer.Services.Http.Enums;
-using WebServer.Services.Http.Exceptions;
+using WebServer.Models.Enums;
+using WebServer.Services.HttpContextFactories.Exceptions;
 
-namespace WebServer.Services.Http.Helpers
+namespace WebServer.Services.HttpContextFactories.Helpers
 {
     internal static class HttpRequestParseHelper
     {

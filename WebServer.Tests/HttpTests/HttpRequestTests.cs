@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using FluentAssertions;
-using WebServer.Http;
-using WebServer.Http.Interfaces;
-using WebServer.Services.Http.Model;
-using WebServer.Services.Http.Exceptions;
-using WebServer.Services.Http.Enums;
+using WebServer.Models.Enums;
+using WebServer.Services.HttpContextFactories.Exceptions;
+using WebServer.Models;
 
 namespace WebServer.Tests.HttpTests
 {
@@ -241,7 +235,7 @@ namespace WebServer.Tests.HttpTests
                 "\n" +
                 "name1 = value1 & name2 = value2";
             // Act
-            Action act = () => new HttpRequest(httpRequestString, null);
+            Action act = () => new HttpRequest(httpRequestString);
 
             // Assert
             act.Should().Throw<HttpParseException>();

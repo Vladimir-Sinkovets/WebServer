@@ -1,7 +1,4 @@
-﻿using System;
-using WebServer.Http.Interfaces;
-
-namespace WebServer.Services.Servers
+﻿namespace WebServer.Services.Servers
 {
     public interface IServer
     {

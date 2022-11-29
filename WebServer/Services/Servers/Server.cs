@@ -2,10 +2,10 @@
 using System;
 using System.Net;
 using System.Threading;
-using WebServer.OptionsModels;
 using WebServer.Services.ThreadPools;
 using WebServer.Services.ClientHandlers;
 using WebServer.Services.TcpListenerFactories;
+using WebServer.Services.Servers.OptionsModels;
 
 namespace WebServer.Services.Servers
 {
@@ -16,13 +16,13 @@ namespace WebServer.Services.Servers
         private readonly IThreadPool _threadPool;
         private readonly IClientHandler _clientHandler;
 
-        private readonly WebServerConfiguration _options;
+        private readonly ServerConfiguration _options;
 
         private bool _isRunning = false;
 
         public string Name { get; }
 
-        public Server(IOptions<WebServerConfiguration> options, IClientHandler clientHandler,
+        public Server(IOptions<ServerConfiguration> options, IClientHandler clientHandler,
             IThreadPool threadPool, ITcpListenerFactory tcpListener)
         {
             _options = options.Value;

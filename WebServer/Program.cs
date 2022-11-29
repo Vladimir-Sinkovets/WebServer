@@ -4,9 +4,10 @@ using WebServer.Extensions.ServiceCollectionEx;
 using WebServer.Services.CookieIdentifiers;
 using WebServer.Services.ServerCollections;
 using WebServer.Services.Servers;
-using WebServer.Services.Http.Enums;
-using WebServer.Services.Http.Models;
 using System.ComponentModel;
+using WebServer.Models.Enums;
+using WebServer.Models;
+using WebServer.IoC;
 
 namespace WebServer
 {

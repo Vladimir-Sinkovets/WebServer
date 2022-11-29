@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebServer.Services.Http.CookieCollections;
+﻿using System.Linq;
+using WebServer.Models.CookieCollections;
 
-namespace WebServer.Services.Http.Helpers
+namespace WebServer.Services.HttpContextFactories.Helpers
 {
     internal static class IResponseCookieCollectionExtentions
     {

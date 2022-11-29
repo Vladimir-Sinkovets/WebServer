@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WebServer.Services.Http.Models
+namespace WebServer.Models
 {
     public class HttpContext
     {

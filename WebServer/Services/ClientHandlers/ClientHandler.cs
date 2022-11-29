@@ -3,12 +3,11 @@ using System;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
-using WebServer.Http.Interfaces;
 using WebServer.Services.TcpListenerFactories;
-using WebServer.Services.Http;
-using WebServer.Http.Helpers;
-using WebServer.Services.Http.Model;
-using WebServer.Services.Http.Exceptions;
+using WebServer.Models;
+using WebServer.Services.HttpContextFactories.Exceptions;
+using WebServer.Services.HttpContextFactories.Helpers;
+using WebServer.Services.HttpContextFactories;
 
 namespace WebServer.Services.ClientHandlers
 {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebServer.Services.Http.Enums
+namespace WebServer.Models.Enums
 {
     public enum StatusCode
     {

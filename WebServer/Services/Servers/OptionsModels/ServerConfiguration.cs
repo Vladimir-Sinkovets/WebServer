@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
 
-namespace WebServer.OptionsModels
+namespace WebServer.Services.Servers.OptionsModels
 {
-    public class WebServerConfiguration
+    public class ServerConfiguration
     {
         public int ThreadsCount { get; set; }
         public string IpAddress { get; set; }

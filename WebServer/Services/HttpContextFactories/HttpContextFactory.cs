@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
-using WebServer.Services.Http.CookieCollections;
-using WebServer.Services.Http.Helpers;
-using WebServer.Services.Http.Models;
+using WebServer.Models;
+using WebServer.Models.CookieCollections;
+using WebServer.Services.HttpContextFactories.Helpers;
 
-namespace WebServer.Services.Http
+namespace WebServer.Services.HttpContextFactories
 {
     public class HttpContextFactory : IHttpContextFactory
     {
@@ -27,7 +27,7 @@ namespace WebServer.Services.Http
 
         private static HttpRequest ParseRequest(string headData, byte[] body)
         {
-            HttpRequest request = new()
+            var request = new HttpRequest()
             {
                 Path = HttpRequestParseHelper.GetPath(headData),
                 Query = HttpRequestParseHelper.GetQueryParameters(headData),

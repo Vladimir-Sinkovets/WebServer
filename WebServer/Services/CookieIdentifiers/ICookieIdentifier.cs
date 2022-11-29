@@ -1,5 +1,5 @@
 ﻿using System;
-using WebServer.Services.Http.Models;
+using WebServer.Models;
 
 namespace WebServer.Services.CookieIdentifiers
 {

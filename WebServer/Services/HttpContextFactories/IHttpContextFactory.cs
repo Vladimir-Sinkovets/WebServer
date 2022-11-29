@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WebServer.Services.Http.Models;
+using WebServer.Models;
 
-namespace WebServer.Services.Http
+namespace WebServer.Services.HttpContextFactories
 {
     public interface IHttpContextFactory
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace WebServer.Services.Http.CookieCollections
+namespace WebServer.Models.CookieCollections
 {
     public class ResponseCookieCollection : IResponseCookieCollection
     {
